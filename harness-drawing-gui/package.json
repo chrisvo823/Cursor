@@ -1,0 +1,14 @@
+{
+  "name": "harness-drawing-gui",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/web",
+    "packages/core"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @harness/web",
+    "build": "npm run build -w @harness/web",
+    "typecheck": "npm run typecheck -w @harness/web && npm run typecheck -w @harness/core"
+  }
+}

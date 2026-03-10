@@ -1,0 +1,246 @@
+:root {
+  color-scheme: dark;
+  --bg: #0a1120;
+  --panel: #101a31;
+  --panel-2: #15233f;
+  --line: #2b3a62;
+  --text: #e7eefc;
+  --muted: #a9b5d8;
+  --accent: #78a8ff;
+  --ok: #3ddc97;
+  --warn: #ffcf6b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  font-family: Inter, system-ui, sans-serif;
+  background: radial-gradient(circle at top left, #182a56 0%, var(--bg) 40%, #060a14 100%);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.shell {
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.topbar p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pill-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pill strong {
+  color: var(--text);
+}
+
+.pill-ok {
+  border-color: rgba(61, 220, 151, 0.35);
+}
+
+.pill-warn {
+  border-color: rgba(255, 207, 107, 0.35);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+.control-rail,
+.preview-pane {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+}
+
+.control-rail {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-section {
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(8, 15, 31, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panel-section h2 {
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.field p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.grid-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.button-row,
+.chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+button.primary,
+.chip-active {
+  background: rgba(120, 168, 255, 0.18);
+  border-color: rgba(120, 168, 255, 0.4);
+}
+
+.preview-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 760px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.preview-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.preview-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.paper-wrap {
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.paper-svg {
+  width: min(1200px, 100%);
+  aspect-ratio: 720 / 405;
+  background: #e9f0ff;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.svg-heading {
+  fill: #1b2e9e;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.svg-pin {
+  fill: #1b2e9e;
+  font-size: 5px;
+  font-weight: 800;
+}
+
+.svg-rail,
+.svg-wire {
+  stroke: #111;
+  stroke-width: 0.8;
+}
+
+.svg-label-left,
+.svg-label-right {
+  fill: #111;
+  font-size: 3.9px;
+}
+
+@media (max-width: 1200px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
