@@ -29,7 +29,9 @@ The uploaded materials establish three hard constraints:
 - `docs/` – product, UI, rendering, and acceptance specs
 - `config/project.yaml` – machine-readable implementation brief for Cursor
 - `samples/` – reference assets copied from the conversation
-- `packages/core/` – shared types, pinout normalization, and geometry helpers
+- `packages/shared/` – shared types, parsing, and pinout normalization
+- `packages/render/` – page scene builders and renderer-facing geometry
+- `packages/core/` – legacy scaffold package kept for migration compatibility
 - `apps/web/` – React/Vite front-end scaffold
 - `.cursor/rules/` – coding guardrails for Cursor
 
@@ -42,9 +44,9 @@ npm run dev
 
 ## Recommended build order
 
-1. Finish pinout normalization in `packages/core`
-2. Lock page geometry using the PDF template and example overlay
-3. Implement Page 2 SVG renderer
+1. Finish pinout normalization in `packages/shared`
+2. Lock page geometry in `packages/render`
+3. Implement Page 2 SVG renderer against render scenes
 4. Implement Page 1 overlay renderer
 5. Add project save/load
 6. Add PDF, SVG, DXF export

@@ -1,4 +1,4 @@
-import type { NormalizedPinout } from "@harness/core";
+import type { NormalizedPinout } from "@harness/shared";
 
 export const samplePinout: NormalizedPinout = {
   "rows": [
@@ -315,5 +315,10 @@ export const samplePinout: NormalizedPinout = {
       "used": true
     }
   ],
-  "pinCount": 26
+  "pinCount": 26,
+  "diagnostics": {
+    "selectedSheet": "Ladder_26pin",
+    "ignoredRows": 0,
+    "warnings": []
+  }
 } as NormalizedPinout;

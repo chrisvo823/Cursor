@@ -14,7 +14,11 @@
     "baseUrl": ".",
     "paths": {
       "@harness/core": ["packages/core/src/index.ts"],
-      "@harness/core/*": ["packages/core/src/*"]
+      "@harness/core/*": ["packages/core/src/*"],
+      "@harness/shared": ["packages/shared/src/index.ts"],
+      "@harness/shared/*": ["packages/shared/src/*"],
+      "@harness/render": ["packages/render/src/index.ts"],
+      "@harness/render/*": ["packages/render/src/*"]
     }
   }
 }

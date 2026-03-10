@@ -221,6 +221,12 @@ button.primary,
   font-weight: 800;
 }
 
+.svg-subheading {
+  fill: #1b2e9e;
+  font-size: 4.2px;
+  font-weight: 600;
+}
+
 .svg-pin {
   fill: #1b2e9e;
   font-size: 5px;

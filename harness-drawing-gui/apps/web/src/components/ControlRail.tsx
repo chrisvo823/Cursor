@@ -1,4 +1,4 @@
-import type { NormalizedPinout } from "@harness/core";
+import type { NormalizedPinout } from "@harness/shared";
 
 type ControlRailProps = {
   pinout: NormalizedPinout;
@@ -40,8 +40,9 @@ export function ControlRail({ pinout }: ControlRailProps) {
 
       <section className="panel-section">
         <h2>3) Data summary</h2>
-        <p>{pinout.rows.length} normalized rows · {pinout.pinCount} pins</p>
+        <p>{pinout.rows.length} parsed connections · {pinout.pinCount} pins</p>
         <p>TP rows: {pinout.rows.filter((row) => row.type === "TP").length}</p>
+        <p>Sheet: {pinout.diagnostics.selectedSheet}</p>
       </section>
 
       <section className="panel-section">

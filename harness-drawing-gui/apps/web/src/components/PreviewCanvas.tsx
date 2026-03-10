@@ -1,15 +1,18 @@
-import { buildPage2Geometry } from "@harness/core";
-import type { NormalizedPinout } from "@harness/core";
+import { buildPage2Scene } from "@harness/render";
+import type { NormalizedPinout } from "@harness/shared";
 
 type PreviewCanvasProps = {
   pinout: NormalizedPinout;
 };
 
 export function PreviewCanvas({ pinout }: PreviewCanvasProps) {
-  const geometry = buildPage2Geometry({
-    pinCount: pinout.pinCount,
+  const scene = buildPage2Scene(pinout, {
     linePitchMm: 9.5,
     autoExpandConnectorColumns: true,
+    leftConnectorName: "P2",
+    rightConnectorName: "P4",
+    leftConnectorSubtitle: "TO TAIL (J2)",
+    rightConnectorSubtitle: "TO I/O CARRIER (J4)",
   });
 
   return (
@@ -22,58 +25,133 @@ export function PreviewCanvas({ pinout }: PreviewCanvasProps) {
       </div>
 
       <div className="paper-wrap">
-        <svg viewBox="0 0 720 405" className="paper-svg" aria-label="Harness page 2 concept preview">
+        <svg
+          viewBox={`0 0 ${scene.pageSize.width} ${scene.pageSize.height}`}
+          className="paper-svg"
+          aria-label="Harness page 2 concept preview"
+        >
           <rect x="0" y="0" width="720" height="405" fill="#e9f0ff" />
 
           <rect
-            x={geometry.leftColumnX}
-            y={geometry.columnY}
-            width={geometry.columnWidth}
-            height={geometry.columnHeight}
+            x={scene.leftColumn.x}
+            y={scene.leftColumn.y}
+            width={scene.leftColumn.width}
+            height={scene.leftColumn.height}
             fill="rgba(255,247,168,0.92)"
             stroke="#111"
             strokeWidth="0.8"
           />
           <rect
-            x={geometry.rightColumnX}
-            y={geometry.columnY}
-            width={geometry.columnWidth}
-            height={geometry.columnHeight}
+            x={scene.rightColumn.x}
+            y={scene.rightColumn.y}
+            width={scene.rightColumn.width}
+            height={scene.rightColumn.height}
             fill="rgba(255,247,168,0.92)"
             stroke="#111"
             strokeWidth="0.8"
           />
 
-          <text x={geometry.leftColumnX + geometry.columnWidth / 2} y={70} textAnchor="middle" className="svg-heading">P2</text>
-          <text x={geometry.rightColumnX + geometry.columnWidth / 2} y={70} textAnchor="middle" className="svg-heading">P4</text>
+          <text x={scene.leftColumn.x + scene.leftColumn.width / 2} y={70} textAnchor="middle" className="svg-heading">
+            {scene.leftColumn.name}
+          </text>
+          <text x={scene.rightColumn.x + scene.rightColumn.width / 2} y={70} textAnchor="middle" className="svg-heading">
+            {scene.rightColumn.name}
+          </text>
 
-          <line x1={geometry.leftRailX} y1={geometry.columnY + 8} x2={geometry.leftRailX} y2={geometry.columnY + geometry.columnHeight - 8} className="svg-rail" />
-          <line x1={geometry.rightRailX} y1={geometry.columnY + 8} x2={geometry.rightRailX} y2={geometry.columnY + geometry.columnHeight - 8} className="svg-rail" />
+          <text
+            x={scene.leftColumn.x + scene.leftColumn.width / 2}
+            y={78}
+            textAnchor="middle"
+            className="svg-subheading"
+          >
+            {scene.leftColumn.subtitle}
+          </text>
+          <text
+            x={scene.rightColumn.x + scene.rightColumn.width / 2}
+            y={78}
+            textAnchor="middle"
+            className="svg-subheading"
+          >
+            {scene.rightColumn.subtitle}
+          </text>
 
-          {geometry.pinYs.map((y, index) => (
-            <g key={index}>
-              <circle cx={geometry.leftRailX} cy={y} r="1.4" fill="#111" />
-              <circle cx={geometry.rightRailX} cy={y} r="1.4" fill="#111" />
-              <text x={geometry.leftColumnX + geometry.columnWidth - 5} y={y + 2} textAnchor="end" className="svg-pin">{index + 1}</text>
-              <text x={geometry.rightColumnX + 5} y={y + 2} textAnchor="start" className="svg-pin">{index + 1}</text>
+          <line
+            x1={scene.leftColumn.railX}
+            y1={scene.leftColumn.y + 8}
+            x2={scene.leftColumn.railX}
+            y2={scene.leftColumn.y + scene.leftColumn.height - 8}
+            className="svg-rail"
+          />
+          <line
+            x1={scene.rightColumn.railX}
+            y1={scene.rightColumn.y + 8}
+            x2={scene.rightColumn.railX}
+            y2={scene.rightColumn.y + scene.rightColumn.height - 8}
+            className="svg-rail"
+          />
+
+          {scene.pinRows.map((row) => (
+            <g key={row.pin}>
+              <circle cx={row.leftDot.x} cy={row.leftDot.y} r="1.4" fill="#111" />
+              <circle cx={row.rightDot.x} cy={row.rightDot.y} r="1.4" fill="#111" />
+              <text
+                x={scene.leftColumn.x + scene.leftColumn.width - 5}
+                y={row.y + 2}
+                textAnchor="end"
+                className="svg-pin"
+              >
+                {row.pin}
+              </text>
+              <text x={scene.rightColumn.x + 5} y={row.y + 2} textAnchor="start" className="svg-pin">
+                {row.pin}
+              </text>
             </g>
           ))}
 
-          {pinout.rows.filter((row) => row.used).map((row, index) => {
-            const y1 = geometry.pinYs[row.fromPin - 1];
-            const y2 = geometry.pinYs[row.toPin - 1];
-            const isTp = row.type === "TP" || row.pair.length > 0;
+          {scene.wires.map((wire) => {
             return (
-              <g key={`${row.fromPin}-${row.toPin}-${index}`}>
-                <line x1={geometry.leftRailX} y1={y1} x2={geometry.rightRailX} y2={y2} className="svg-wire" />
-                <text x={geometry.leftColumnX + 4} y={y1 + 2} className="svg-label-left">{row.leftLabel}</text>
-                <text x={geometry.rightColumnX + geometry.columnWidth - 4} y={y2 + 2} textAnchor="end" className="svg-label-right">{row.rightLabel}</text>
-                {isTp ? (
+              <g key={wire.id}>
+                <line x1={wire.start.x} y1={wire.start.y} x2={wire.end.x} y2={wire.end.y} className="svg-wire" />
+                <text x={wire.leftLabelPos.x} y={wire.leftLabelPos.y} className="svg-label-left">
+                  {wire.leftLabel}
+                </text>
+                <text x={wire.rightLabelPos.x} y={wire.rightLabelPos.y} textAnchor="end" className="svg-label-right">
+                  {wire.rightLabel}
+                </text>
+                {wire.twistedPair && wire.leftTpMarkerCenter && wire.rightTpMarkerCenter ? (
                   <>
-                    <circle cx={geometry.leftRailX + 8} cy={y1 - 2} r="1.5" fill="none" stroke="#111" strokeWidth="0.7" />
-                    <circle cx={geometry.leftRailX + 8} cy={y1 + 2} r="1.5" fill="none" stroke="#111" strokeWidth="0.7" />
-                    <circle cx={geometry.rightRailX - 8} cy={y2 - 2} r="1.5" fill="none" stroke="#111" strokeWidth="0.7" />
-                    <circle cx={geometry.rightRailX - 8} cy={y2 + 2} r="1.5" fill="none" stroke="#111" strokeWidth="0.7" />
+                    <circle
+                      cx={wire.leftTpMarkerCenter.x}
+                      cy={wire.leftTpMarkerCenter.y - 2}
+                      r="1.5"
+                      fill="none"
+                      stroke="#111"
+                      strokeWidth="0.7"
+                    />
+                    <circle
+                      cx={wire.leftTpMarkerCenter.x}
+                      cy={wire.leftTpMarkerCenter.y + 2}
+                      r="1.5"
+                      fill="none"
+                      stroke="#111"
+                      strokeWidth="0.7"
+                    />
+                    <circle
+                      cx={wire.rightTpMarkerCenter.x}
+                      cy={wire.rightTpMarkerCenter.y - 2}
+                      r="1.5"
+                      fill="none"
+                      stroke="#111"
+                      strokeWidth="0.7"
+                    />
+                    <circle
+                      cx={wire.rightTpMarkerCenter.x}
+                      cy={wire.rightTpMarkerCenter.y + 2}
+                      r="1.5"
+                      fill="none"
+                      stroke="#111"
+                      strokeWidth="0.7"
+                    />
                   </>
                 ) : null}
               </g>
