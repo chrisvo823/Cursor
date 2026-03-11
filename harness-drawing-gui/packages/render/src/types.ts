@@ -63,23 +63,10 @@ export type Page2LayoutOptions = {
 };
 
 export type Page2OverlayTransform = {
-  scale: number;
+  scaleX: number;
+  scaleY: number;
   offsetX: number;
   offsetY: number;
-};
-
-export type Page2OverlayColumn = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
-export type Page2OverlayRail = {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
 };
 
 export type Page2OverlayPinLabel = {
@@ -117,17 +104,70 @@ export type Page2OverlayFigure8Marker = {
 export type Page2OverlayModel = {
   sceneWidth: number;
   sceneHeight: number;
-  columns: {
-    left: Page2OverlayColumn;
-    right: Page2OverlayColumn;
-  };
-  rails: {
-    left: Page2OverlayRail;
-    right: Page2OverlayRail;
-  };
   pinDots: ScenePoint[];
   pinLabels: Page2OverlayPinLabel[];
   wires: Page2OverlayWire[];
   texts: Page2OverlayText[];
   figure8Markers: Page2OverlayFigure8Marker[];
+};
+
+export type Page2TemplateAnchorConfig = {
+  templatePageSizePt: PageSizePt;
+  leftRailX: number;
+  rightRailX: number;
+  pinRowStartY: number;
+  pinRowPitch: number;
+  headingLeftCenterX: number;
+  headingRightCenterX: number;
+  headingY: number;
+  subheadingY: number;
+  leftLabelAnchorX: number;
+  rightLabelAnchorX: number;
+  metaAnchorX: number;
+  leftSideBox?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  rightSideBox?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+};
+
+export type Page2OverlayAnchorSnapshot = {
+  leftRailX: number;
+  rightRailX: number;
+  pinRowStartY: number;
+  pinRowPitch: number;
+  headingLeftCenterX: number;
+  headingRightCenterX: number;
+  headingY: number;
+  subheadingY: number;
+  leftLabelAnchorX: number;
+  rightLabelAnchorX: number;
+  metaAnchorX: number;
+};
+
+export type Page2ViewportFit = {
+  sourcePageSizePt: PageSizePt;
+  targetViewportSizePx: {
+    width: number;
+    height: number;
+  };
+  scaleX: number;
+  scaleY: number;
+  offsetX: number;
+  offsetY: number;
+};
+
+export type Page2TemplateCalibration = {
+  viewportFit: Page2ViewportFit;
+  templateAnchors: Page2TemplateAnchorConfig;
+  overlayAnchors: Page2OverlayAnchorSnapshot;
+  overlayToTemplatePt: Page2OverlayTransform;
+  overlayToViewportPx: Page2OverlayTransform;
 };

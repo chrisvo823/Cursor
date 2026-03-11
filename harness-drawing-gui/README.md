@@ -1,8 +1,8 @@
 # Harness Drawing GUI
 
-Git-ready repository scaffold for the harness drawing generator.
+Production-oriented MVP foundation for the harness drawing generator.
 
-This repo is designed so Cursor has the right structure, terminology, data contracts, and rendering rules before implementation starts.
+This repo now includes real browser preview plumbing: template PDF ingestion, pinout parsing, deterministic Page 2 scene generation, and template-anchored vector overlay rendering.
 
 ## What this product is
 
@@ -32,7 +32,7 @@ The uploaded materials establish three hard constraints:
 - `packages/shared/` – shared types, parsing, and pinout normalization
 - `packages/render/` – page scene builders and renderer-facing geometry
 - `packages/core/` – legacy scaffold package kept for migration compatibility
-- `apps/web/` – React/Vite front-end scaffold
+- `apps/web/` – React/Vite front-end with template upload + live drawing preview
 - `.cursor/rules/` – coding guardrails for Cursor
 
 ## Quick start

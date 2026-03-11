@@ -1,4 +1,9 @@
-import { buildPage2OverlayModel, computeOverlayTransform, type Page2Scene } from "@harness/render";
+import {
+  DEFAULT_PAGE2_TEMPLATE_ANCHORS,
+  buildPage2OverlayModel,
+  buildPage2TemplateCalibration,
+  type Page2Scene,
+} from "@harness/render";
 import { useEffect, useMemo, useRef } from "react";
 import type { ActivePreviewPage } from "../lib/preview/usePreviewState";
 import type { ResourceState } from "../lib/preview/previewStateModel";
@@ -28,13 +33,21 @@ export function PreviewCanvas({ activePage, template, page2Scene }: PreviewCanva
 
   const overlayTransform = useMemo(() => {
     if (!templatePage || !overlayModel) return null;
-    return computeOverlayTransform({
-      sceneWidth: overlayModel.sceneWidth,
-      sceneHeight: overlayModel.sceneHeight,
-      targetWidth: templatePage.bitmapWidthPx,
-      targetHeight: templatePage.bitmapHeightPx,
+    if (!page2Scene) return null;
+    const calibration = buildPage2TemplateCalibration({
+      scene: page2Scene,
+      templateAnchors: DEFAULT_PAGE2_TEMPLATE_ANCHORS,
+      templatePageSizePt: {
+        width: templatePage.widthPt,
+        height: templatePage.heightPt,
+      },
+      targetViewportSizePx: {
+        width: templatePage.bitmapWidthPx,
+        height: templatePage.bitmapHeightPx,
+      },
     });
-  }, [overlayModel, templatePage]);
+    return calibration.overlayToViewportPx;
+  }, [overlayModel, page2Scene, templatePage]);
 
   useEffect(() => {
     centerScroll(paperWrapRef.current);

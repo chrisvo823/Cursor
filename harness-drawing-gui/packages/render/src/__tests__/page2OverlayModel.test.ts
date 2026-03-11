@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { NormalizedPinout } from "@harness/shared";
-import { buildPage2Scene, buildPage2OverlayModel, computeOverlayTransform } from "../index";
+import {
+  DEFAULT_PAGE2_TEMPLATE_ANCHORS,
+  buildPage2OverlayModel,
+  buildPage2Scene,
+  buildPage2TemplateCalibration,
+} from "../index";
 
 const samplePinout: NormalizedPinout = {
   rows: [
@@ -40,7 +45,7 @@ const samplePinout: NormalizedPinout = {
 };
 
 describe("buildPage2OverlayModel", () => {
-  it("emits deterministic vector model with TP markers and metadata text", () => {
+  it("emits deterministic dynamic model without connector rectangles", () => {
     const scene = buildPage2Scene(samplePinout, {
       leftConnectorName: "P2",
       rightConnectorName: "P4",
@@ -56,19 +61,31 @@ describe("buildPage2OverlayModel", () => {
     expect(model.figure8Markers.length).toBe(4);
     expect(model.texts.some((text) => text.tone === "meta" && text.value.includes("W101"))).toBe(true);
     expect(model.texts.some((text) => text.tone === "heading" && text.value === "P2")).toBe(true);
+    expect("columns" in (model as Record<string, unknown>)).toBe(false);
+    expect("rails" in (model as Record<string, unknown>)).toBe(false);
   });
 });
 
-describe("computeOverlayTransform", () => {
-  it("centers scene deterministically into target bounds", () => {
-    const transform = computeOverlayTransform({
-      sceneWidth: 720,
-      sceneHeight: 405,
-      targetWidth: 1000,
-      targetHeight: 900,
+describe("buildPage2TemplateCalibration", () => {
+  it("computes deterministic anchor calibration structure", () => {
+    const scene = buildPage2Scene(samplePinout, {
+      leftConnectorName: "P2",
+      rightConnectorName: "P4",
+      leftConnectorSubtitle: "LEFT",
+      rightConnectorSubtitle: "RIGHT",
+      linePitchMm: 9.5,
+      autoExpandConnectorColumns: true,
     });
-    expect(transform.scale).toBeCloseTo(1.388888, 5);
-    expect(transform.offsetX).toBeCloseTo(0, 5);
-    expect(transform.offsetY).toBeCloseTo(168.75, 5);
+    const calibration = buildPage2TemplateCalibration({
+      scene,
+      templateAnchors: DEFAULT_PAGE2_TEMPLATE_ANCHORS,
+      templatePageSizePt: DEFAULT_PAGE2_TEMPLATE_ANCHORS.templatePageSizePt,
+      targetViewportSizePx: { width: 1800, height: 1013 },
+    });
+
+    expect(calibration.overlayToViewportPx.scaleX).toBeCloseTo(2.5, 4);
+    expect(calibration.overlayToViewportPx.offsetX).toBeCloseTo(0, 4);
+    expect(calibration.templateAnchors.leftRailX).toBe(215);
+    expect(calibration.overlayAnchors.leftRailX).toBe(scene.leftColumn.railX);
   });
 });

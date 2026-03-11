@@ -152,34 +152,6 @@ export function buildPage2OverlayModel(scene: Page2Scene): Page2OverlayModel {
   return {
     sceneWidth: scene.pageSize.width,
     sceneHeight: scene.pageSize.height,
-    columns: {
-      left: {
-        x: scene.leftColumn.x,
-        y: scene.leftColumn.y,
-        width: scene.leftColumn.width,
-        height: scene.leftColumn.height,
-      },
-      right: {
-        x: scene.rightColumn.x,
-        y: scene.rightColumn.y,
-        width: scene.rightColumn.width,
-        height: scene.rightColumn.height,
-      },
-    },
-    rails: {
-      left: {
-        x1: scene.leftColumn.railX,
-        y1: scene.leftColumn.y + 8,
-        x2: scene.leftColumn.railX,
-        y2: scene.leftColumn.y + scene.leftColumn.height - 8,
-      },
-      right: {
-        x1: scene.rightColumn.railX,
-        y1: scene.rightColumn.y + 8,
-        x2: scene.rightColumn.railX,
-        y2: scene.rightColumn.y + scene.rightColumn.height - 8,
-      },
-    },
     pinDots,
     pinLabels,
     wires,
