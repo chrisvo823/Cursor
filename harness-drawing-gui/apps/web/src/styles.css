@@ -145,6 +145,19 @@ textarea {
   color: #ff9a9a;
 }
 
+.status-text {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+
+.status-ok {
+  color: #8de4bd;
+}
+
+.status-warn {
+  color: #ffd6a0;
+}
+
 input[type="file"] {
   width: 100%;
   padding: 10px;

@@ -39,6 +39,7 @@ export default function App() {
           onAutoExpandChange={preview.setAutoExpandConnectorColumns}
           onPinoutUpload={preview.onPinoutUpload}
           onTemplateUpload={preview.onTemplateUpload}
+          onProjectUpload={preview.onProjectUpload}
           pinoutStatus={preview.pinout.status}
           templateStatus={preview.template.status}
           pinoutError={preview.pinout.error}
@@ -55,6 +56,12 @@ export default function App() {
           onPage1RevisionFieldChange={preview.setPage1RevisionField}
           onPage1TitleFieldChange={preview.setPage1TitleBlockField}
           onPage1CalloutChange={preview.setPage1CalloutValue}
+          onSaveProjectClick={() => void preview.saveProjectJson()}
+          onExportPdfClick={() => void preview.exportPdf()}
+          onExportSvgClick={() => void preview.exportSvg()}
+          onExportDxfClick={() => void preview.exportDxf()}
+          canExport={preview.canExport}
+          actionMessage={preview.actionMessage}
         />
         <PreviewCanvas
           activePage={preview.activePage}

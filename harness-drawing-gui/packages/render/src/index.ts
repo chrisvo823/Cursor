@@ -8,3 +8,6 @@ export * from "./page1/anchors";
 export * from "./page1/notes";
 export * from "./page1/buildPage1OverlayModel";
 export * from "./page1/calibration";
+export * from "./export/primitives";
+export * from "./export/svg";
+export * from "./export/dxf";

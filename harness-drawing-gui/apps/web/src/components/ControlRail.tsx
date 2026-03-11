@@ -11,6 +11,7 @@ type ControlRailProps = {
   onAutoExpandChange: (value: boolean) => void;
   onPinoutUpload: (file: File | null) => Promise<void>;
   onTemplateUpload: (file: File | null) => Promise<void>;
+  onProjectUpload: (file: File | null) => Promise<void>;
   pinoutStatus: ResourceStatus;
   templateStatus: ResourceStatus;
   pinoutError: string | null;
@@ -27,6 +28,12 @@ type ControlRailProps = {
   onPage1RevisionFieldChange: (key: keyof Page1OverlayFields["revision"], value: string) => void;
   onPage1TitleFieldChange: (key: keyof Page1OverlayFields["titleBlock"], value: string) => void;
   onPage1CalloutChange: (id: string, value: string) => void;
+  onSaveProjectClick: () => void;
+  onExportPdfClick: () => void;
+  onExportSvgClick: () => void;
+  onExportDxfClick: () => void;
+  canExport: boolean;
+  actionMessage: { tone: "ok" | "warn"; text: string } | null;
 };
 
 export function ControlRail({
@@ -38,6 +45,7 @@ export function ControlRail({
   onAutoExpandChange,
   onPinoutUpload,
   onTemplateUpload,
+  onProjectUpload,
   pinoutStatus,
   templateStatus,
   pinoutError,
@@ -54,6 +62,12 @@ export function ControlRail({
   onPage1RevisionFieldChange,
   onPage1TitleFieldChange,
   onPage1CalloutChange,
+  onSaveProjectClick,
+  onExportPdfClick,
+  onExportSvgClick,
+  onExportDxfClick,
+  canExport,
+  actionMessage,
 }: ControlRailProps) {
   return (
     <aside className="control-rail">
@@ -276,11 +290,31 @@ export function ControlRail({
       </section>
 
       <section className="panel-section">
-        <h2>5) Export</h2>
+        <h2>5) Project save/load</h2>
         <div className="button-row">
-          <button className="primary" disabled>Export PDF</button>
-          <button disabled>Export SVG</button>
-          <button disabled>Export DXF</button>
+          <button onClick={onSaveProjectClick}>Save Project JSON</button>
+        </div>
+        <div className="field">
+          <label>Load project JSON</label>
+          <input
+            type="file"
+            accept=".json,application/json"
+            onChange={(event) => void onProjectUpload(event.currentTarget.files?.[0] ?? null)}
+          />
+        </div>
+        {actionMessage ? (
+          <p className={actionMessage.tone === "ok" ? "status-text status-ok" : "status-text status-warn"}>
+            {actionMessage.text}
+          </p>
+        ) : null}
+      </section>
+
+      <section className="panel-section">
+        <h2>6) Export</h2>
+        <div className="button-row">
+          <button className="primary" onClick={onExportPdfClick} disabled={!canExport}>Export PDF</button>
+          <button onClick={onExportSvgClick} disabled={templateStatus !== "loaded"}>Export SVG</button>
+          <button onClick={onExportDxfClick} disabled={!canExport}>Export DXF</button>
         </div>
       </section>
     </aside>

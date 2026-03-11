@@ -2,7 +2,7 @@
 
 Production-oriented MVP foundation for the harness drawing generator.
 
-This repo now includes real browser preview plumbing: template PDF ingestion, pinout parsing, deterministic Page 2 scene generation, and template-anchored vector overlay rendering.
+This repo now includes real browser preview plumbing, Page 1/Page 2 editable overlays, project JSON save/load, and deterministic PDF/SVG/DXF export adapters driven by shared render models.
 
 ## What this product is
 
