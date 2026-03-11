@@ -1,26 +1,54 @@
 import { ControlRail } from "./components/ControlRail";
 import { PreviewCanvas } from "./components/PreviewCanvas";
 import { StatusPill } from "./components/StatusPill";
-import { samplePinout } from "./lib/sampleProject";
+import { usePreviewState } from "./lib/preview/usePreviewState";
 
 export default function App() {
+  const preview = usePreviewState();
+  const pinCount = preview.pinout.data?.pinCount ?? 0;
+
   return (
     <div className="shell">
       <header className="topbar">
         <div>
           <h1>Harness Drawing GUI</h1>
-          <p>Electrical harness drawing generator scaffold for Cursor</p>
+          <p>Template-backed harness drawing generator</p>
         </div>
         <div className="pill-row">
-          <StatusPill label="Pinout" value={`${samplePinout.rows.length} rows`} tone="ok" />
-          <StatusPill label="Template" value="2-page PDF" tone="ok" />
-          <StatusPill label="Mode" value="scaffold" />
+          <StatusPill
+            label="Pinout"
+            value={preview.pinout.status === "loaded" ? `${preview.parsedConnectionCount} connections` : "not loaded"}
+            tone={preview.pinout.status === "loaded" ? "ok" : preview.pinout.status === "error" ? "warn" : "neutral"}
+          />
+          <StatusPill
+            label="Template"
+            value={preview.template.status === "loaded" ? "loaded" : "not loaded"}
+            tone={preview.template.status === "loaded" ? "ok" : preview.template.status === "error" ? "warn" : "neutral"}
+          />
+          <StatusPill label="Active page" value={`Page ${preview.activePage}`} />
         </div>
       </header>
 
       <main className="workspace">
-        <ControlRail pinout={samplePinout} />
-        <PreviewCanvas pinout={samplePinout} />
+        <ControlRail
+          activePage={preview.activePage}
+          onActivePageChange={preview.setActivePage}
+          linePitchMm={preview.linePitchMm}
+          onLinePitchChange={preview.setLinePitchMm}
+          autoExpandConnectorColumns={preview.autoExpandConnectorColumns}
+          onAutoExpandChange={preview.setAutoExpandConnectorColumns}
+          onPinoutUpload={preview.onPinoutUpload}
+          onTemplateUpload={preview.onTemplateUpload}
+          pinoutStatus={preview.pinout.status}
+          templateStatus={preview.template.status}
+          pinoutError={preview.pinout.error}
+          templateError={preview.template.error}
+          parsedConnectionCount={preview.parsedConnectionCount}
+          pinCount={pinCount}
+          twistedPairCount={preview.twistedPairCount}
+          activeSheetName={preview.activeSheetName}
+        />
+        <PreviewCanvas activePage={preview.activePage} template={preview.template} page2Scene={preview.page2Scene} />
       </main>
     </div>
   );

@@ -61,3 +61,73 @@ export type Page2LayoutOptions = {
   leftConnectorSubtitle: string;
   rightConnectorSubtitle: string;
 };
+
+export type Page2OverlayTransform = {
+  scale: number;
+  offsetX: number;
+  offsetY: number;
+};
+
+export type Page2OverlayColumn = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type Page2OverlayRail = {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+};
+
+export type Page2OverlayPinLabel = {
+  id: string;
+  value: string;
+  x: number;
+  y: number;
+  textAnchor: "start" | "end";
+};
+
+export type Page2OverlayWire = {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+};
+
+export type Page2OverlayText = {
+  id: string;
+  value: string;
+  x: number;
+  y: number;
+  textAnchor?: "start" | "middle" | "end";
+  tone: "heading" | "subheading" | "labelLeft" | "labelRight" | "meta";
+};
+
+export type Page2OverlayFigure8Marker = {
+  id: string;
+  x: number;
+  y: number;
+  radius: number;
+};
+
+export type Page2OverlayModel = {
+  sceneWidth: number;
+  sceneHeight: number;
+  columns: {
+    left: Page2OverlayColumn;
+    right: Page2OverlayColumn;
+  };
+  rails: {
+    left: Page2OverlayRail;
+    right: Page2OverlayRail;
+  };
+  pinDots: ScenePoint[];
+  pinLabels: Page2OverlayPinLabel[];
+  wires: Page2OverlayWire[];
+  texts: Page2OverlayText[];
+  figure8Markers: Page2OverlayFigure8Marker[];
+};

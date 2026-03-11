@@ -137,6 +137,10 @@ input {
   color: var(--muted);
 }
 
+.error-text {
+  color: #ff9a9a;
+}
+
 input[type="file"] {
   width: 100%;
   padding: 10px;
@@ -158,6 +162,14 @@ input[type="file"] {
   flex-wrap: wrap;
 }
 
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 button {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.04);
@@ -170,6 +182,11 @@ button.primary,
 .chip-active {
   background: rgba(120, 168, 255, 0.18);
   border-color: rgba(120, 168, 255, 0.4);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .preview-pane {
@@ -202,17 +219,30 @@ button.primary,
   padding: 16px;
   overflow: auto;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .paper-svg {
   width: min(1200px, 100%);
-  aspect-ratio: 720 / 405;
   background: #e9f0ff;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.18);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.preview-message {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--muted);
+}
+
+.preview-error {
+  color: #ffd4d4;
+  border-color: rgba(255, 120, 120, 0.45);
 }
 
 .svg-heading {
@@ -243,6 +273,18 @@ button.primary,
 .svg-label-right {
   fill: #111;
   font-size: 3.9px;
+}
+
+.svg-meta {
+  fill: #1b2e9e;
+  font-size: 3px;
+  font-weight: 600;
+}
+
+.svg-overlay-note {
+  fill: #1b2e9e;
+  font-size: 21px;
+  font-weight: 600;
 }
 
 @media (max-width: 1200px) {

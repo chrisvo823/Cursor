@@ -12,6 +12,6 @@
     "dev": "npm run dev -w @harness/web",
     "build": "npm run build -w @harness/web",
     "typecheck": "npm run typecheck -w @harness/web && npm run typecheck -w @harness/core && npm run typecheck -w @harness/shared && npm run typecheck -w @harness/render",
-    "test": "npm run test -w @harness/shared && npm run test -w @harness/render"
+    "test": "npm run test -w @harness/web && npm run test -w @harness/shared && npm run test -w @harness/render"
   }
 }
