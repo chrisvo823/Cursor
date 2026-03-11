@@ -16,6 +16,8 @@ export const DEFAULT_PAGE1_TEMPLATE_ANCHORS: Page1TemplateAnchorConfig = {
     maxLines: 22,
     numberColumnWidth: 24,
     markerOffsetX: 12,
+    markerOffsetY: -3.5,
+    markerSize: 4.5,
     charWidthEstimate: 4.1,
   },
   revisionRegion: {
@@ -37,4 +39,10 @@ export const DEFAULT_PAGE1_TEMPLATE_ANCHORS: Page1TemplateAnchorConfig = {
     { id: "callout_4", x: 431, y: 176, radius: 9 },
     { id: "callout_5", x: 459, y: 184, radius: 9 },
   ],
+  calloutTextOffsetY: 1.2,
+};
+
+// A named sample profile keeps calibration tuning explicit for future templates.
+export const SAMPLE_LADDER_26PIN_PAGE1_TEMPLATE_ANCHORS: Page1TemplateAnchorConfig = {
+  ...DEFAULT_PAGE1_TEMPLATE_ANCHORS,
 };

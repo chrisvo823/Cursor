@@ -29,6 +29,7 @@ type ControlRailProps = {
   onPage1TitleFieldChange: (key: keyof Page1OverlayFields["titleBlock"], value: string) => void;
   onPage1CalloutChange: (id: string, value: string) => void;
   onSaveProjectClick: () => void;
+  canSaveProject: boolean;
   onExportPdfClick: () => void;
   onExportSvgClick: () => void;
   onExportDxfClick: () => void;
@@ -63,6 +64,7 @@ export function ControlRail({
   onPage1TitleFieldChange,
   onPage1CalloutChange,
   onSaveProjectClick,
+  canSaveProject,
   onExportPdfClick,
   onExportSvgClick,
   onExportDxfClick,
@@ -292,8 +294,9 @@ export function ControlRail({
       <section className="panel-section">
         <h2>5) Project save/load</h2>
         <div className="button-row">
-          <button onClick={onSaveProjectClick}>Save Project JSON</button>
+          <button onClick={onSaveProjectClick} disabled={!canSaveProject}>Save Project JSON</button>
         </div>
+        {!canSaveProject ? <p>Load template + pinout before saving project state.</p> : null}
         <div className="field">
           <label>Load project JSON</label>
           <input
@@ -316,6 +319,7 @@ export function ControlRail({
           <button onClick={onExportSvgClick} disabled={templateStatus !== "loaded"}>Export SVG</button>
           <button onClick={onExportDxfClick} disabled={!canExport}>Export DXF</button>
         </div>
+        {!canExport ? <p>PDF/DXF require both template and pinout to be loaded.</p> : null}
       </section>
     </aside>
   );

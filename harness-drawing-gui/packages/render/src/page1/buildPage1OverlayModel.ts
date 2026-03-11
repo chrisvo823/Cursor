@@ -44,8 +44,8 @@ function buildNotesTexts(
             id: `note-marker-${note.number}`,
             type: markerType,
             x: anchors.notesRegion.x + anchors.notesRegion.markerOffsetX,
-            y: line.y - 3.5,
-            size: 4.5,
+            y: line.y + anchors.notesRegion.markerOffsetY,
+            size: anchors.notesRegion.markerSize,
           });
         }
       }
@@ -178,7 +178,7 @@ export function buildPage1OverlayModel(
       id: `callout-text-${callout.id}`,
       value: callout.value,
       x: callout.x,
-      y: callout.y + 1.2,
+      y: callout.y + anchors.calloutTextOffsetY,
       textAnchor: "middle" as const,
       tone: "callout" as const,
     })),

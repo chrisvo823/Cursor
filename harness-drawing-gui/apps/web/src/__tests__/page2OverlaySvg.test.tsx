@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it } from "vitest";
 import type { Page2OverlayModel } from "@harness/render";
 import { Page2OverlaySvg } from "../components/Page2OverlaySvg";
 

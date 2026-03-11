@@ -104,4 +104,10 @@ describe("project schema parsing", () => {
   it("rejects invalid json text", () => {
     expect(() => parseProjectJson("{ this is invalid json }")).toThrow(ProjectSchemaError);
   });
+
+  it("rejects project snapshots with missing template image data", () => {
+    const fixture = buildFixture();
+    fixture.template.pages[1].imageDataUrl = "";
+    expect(() => parseProjectDocument(fixture)).toThrow(ProjectSchemaError);
+  });
 });

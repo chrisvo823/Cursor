@@ -99,7 +99,10 @@ export function buildPage2Scene(pinout: NormalizedPinout, overrides?: Partial<Pa
     });
 
   return {
-    pageSize: { width: 720, height: 405 },
+    pageSize: {
+      width: PAGE2_BASE_GEOMETRY.pageWidthPt,
+      height: PAGE2_BASE_GEOMETRY.pageHeightPt,
+    },
     leftColumn: {
       x: PAGE2_BASE_GEOMETRY.leftColumnX,
       y: PAGE2_BASE_GEOMETRY.columnY,
@@ -118,8 +121,8 @@ export function buildPage2Scene(pinout: NormalizedPinout, overrides?: Partial<Pa
       name: options.rightConnectorName,
       subtitle: options.rightConnectorSubtitle,
     },
-    leftToolingAnchor: { x: 113, y: PAGE2_BASE_GEOMETRY.toolingY },
-    rightToolingAnchor: { x: 525, y: PAGE2_BASE_GEOMETRY.toolingY },
+    leftToolingAnchor: { x: PAGE2_BASE_GEOMETRY.leftToolingX, y: PAGE2_BASE_GEOMETRY.toolingY },
+    rightToolingAnchor: { x: PAGE2_BASE_GEOMETRY.rightToolingX, y: PAGE2_BASE_GEOMETRY.toolingY },
     pinRows,
     wires,
   };

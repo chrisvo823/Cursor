@@ -1,15 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
 import {
-  DEFAULT_PAGE1_TEMPLATE_ANCHORS,
-  DEFAULT_PAGE2_TEMPLATE_ANCHORS,
   buildPage1OverlayModel,
-  buildPage2OverlayModel,
-  buildPage2TemplateCalibration,
   buildPage2Scene,
-  buildPage1TemplateCalibration,
-  buildPage1ExportPrimitives,
-  buildPage2ExportPrimitives,
   type Page1OverlayFields,
+  type Page1TemplateAnchorConfig,
+  type Page2TemplateAnchorConfig,
 } from "@harness/render";
 import {
   parsePinoutUpload,
@@ -27,7 +22,12 @@ import { loadTemplatePdf, type LoadedTemplatePdf } from "../template/loadTemplat
 import { TemplateValidationError } from "../template/templateValidation";
 import { downloadBlob } from "../export/download";
 import { exportDrawingPdf } from "../export/pdf";
-import { exportCurrentPageSvg, exportPage2Dxf } from "../export/pageExports";
+import {
+  buildPage1PrimitivesForExport,
+  buildPage2PrimitivesForExport,
+  exportCurrentPageSvg,
+  exportPage2Dxf,
+} from "../export/pageExports";
 import {
   buildProjectDocument,
   parseProjectFileText,
@@ -42,6 +42,7 @@ import {
   toLoadingState,
   type ResourceState,
 } from "./previewStateModel";
+import { resolveTemplateCalibrationProfile } from "../template/calibrationProfile";
 
 export type ActivePreviewPage = 1 | 2;
 
@@ -74,6 +75,7 @@ export type PreviewState = {
   setPage1CalloutValue: (id: string, value: string) => void;
   onProjectUpload: (file: File | null) => Promise<void>;
   saveProjectJson: () => Promise<void>;
+  canSaveProject: boolean;
   exportPdf: () => Promise<void>;
   exportSvg: () => Promise<void>;
   exportDxf: () => Promise<void>;
@@ -82,10 +84,43 @@ export type PreviewState = {
   canExport: boolean;
   page1OverlayModel: ReturnType<typeof buildPage1OverlayModel>;
   page2Scene: ReturnType<typeof buildPage2Scene> | null;
+  page1TemplateAnchors: Page1TemplateAnchorConfig;
+  page2TemplateAnchors: Page2TemplateAnchorConfig;
 };
 
+class PreviewActionError extends Error {
+  readonly code: "MISSING_TEMPLATE" | "MISSING_PINOUT";
+
+  constructor(code: "MISSING_TEMPLATE" | "MISSING_PINOUT", message: string) {
+    super(message);
+    this.code = code;
+    this.name = "PreviewActionError";
+  }
+}
+
+function requireLoadedTemplate(template: ResourceState<LoadedTemplatePdf>): LoadedTemplatePdf {
+  if (template.status !== "loaded" || !template.data) {
+    throw new PreviewActionError("MISSING_TEMPLATE", "Load a valid 2-page template PDF before this action.");
+  }
+  return template.data;
+}
+
+function requireLoadedPinout(pinout: ResourceState<NormalizedPinout>): NormalizedPinout {
+  if (pinout.status !== "loaded" || !pinout.data) {
+    throw new PreviewActionError("MISSING_PINOUT", "Load a parsed pinout workbook or CSV before this action.");
+  }
+  return pinout.data;
+}
+
 function toErrorMessage(error: unknown, fallback: string): string {
-  if (error instanceof TemplateValidationError || error instanceof PinoutParseError) return error.message;
+  if (
+    error instanceof TemplateValidationError ||
+    error instanceof PinoutParseError ||
+    error instanceof ProjectSchemaError ||
+    error instanceof PreviewActionError
+  ) {
+    return error.message;
+  }
   if (error instanceof Error && error.message) return error.message;
   return fallback;
 }
@@ -142,8 +177,7 @@ export function usePreviewState(): PreviewState {
     leftConnectorName,
     leftConnectorSubtitle,
     linePitchMm,
-    pinout.data,
-    pinout.status,
+    pinout,
     rightConnectorName,
     rightConnectorSubtitle,
   ]);
@@ -151,9 +185,13 @@ export function usePreviewState(): PreviewState {
   const parsedConnectionCount = pinout.data?.rows.filter((row) => row.used).length ?? 0;
   const twistedPairCount = pinout.data?.rows.filter((row) => row.type === "TP").length ?? 0;
   const activeSheetName = pinout.data?.diagnostics.selectedSheet ?? null;
+  const calibrationProfile = useMemo(
+    () => resolveTemplateCalibrationProfile(template.data?.fileName),
+    [template.data?.fileName],
+  );
   const page1OverlayModel = useMemo(
-    () => buildPage1OverlayModel(page1Fields, DEFAULT_PAGE1_TEMPLATE_ANCHORS),
-    [page1Fields],
+    () => buildPage1OverlayModel(page1Fields, calibrationProfile.page1),
+    [calibrationProfile.page1, page1Fields],
   );
 
   const setPage1OverallLength = useCallback((value: string) => {
@@ -195,19 +233,16 @@ export function usePreviewState(): PreviewState {
 
   const clearActionMessage = useCallback(() => setActionMessage(null), []);
 
-  const canExport = template.status === "loaded" && pinout.status === "loaded" && page2Scene !== null;
+  const canSaveProject = template.status === "loaded" && pinout.status === "loaded";
+  const canExport = canSaveProject && page2Scene !== null;
 
   const saveProjectJson = useCallback(async () => {
     try {
-      if (template.status !== "loaded" || !template.data) {
-        throw new Error("Cannot save project before template is loaded.");
-      }
-      if (pinout.status !== "loaded" || !pinout.data) {
-        throw new Error("Cannot save project before pinout is loaded.");
-      }
+      const loadedTemplate = requireLoadedTemplate(template);
+      const loadedPinout = requireLoadedPinout(pinout);
       const document = buildProjectDocument({
-        template: template.data,
-        pinout: pinout.data,
+        template: loadedTemplate,
+        pinout: loadedPinout,
         page1Fields,
         page2: {
           linePitchMm,
@@ -234,12 +269,10 @@ export function usePreviewState(): PreviewState {
     leftConnectorSubtitle,
     linePitchMm,
     page1Fields,
-    pinout.data,
-    pinout.status,
     rightConnectorName,
     rightConnectorSubtitle,
-    template.data,
-    template.status,
+    pinout,
+    template,
   ]);
 
   const onProjectUpload = useCallback(async (file: File | null) => {
@@ -266,28 +299,14 @@ export function usePreviewState(): PreviewState {
 
   const exportPdf = useCallback(async () => {
     try {
-      if (template.status !== "loaded" || !template.data) throw new Error("Load template before exporting PDF.");
-      if (pinout.status !== "loaded" || !pinout.data || !page2Scene) {
-        throw new Error("Load pinout before exporting PDF.");
-      }
+      const loadedTemplate = requireLoadedTemplate(template);
+      requireLoadedPinout(pinout);
+      if (!page2Scene) throw new PreviewActionError("MISSING_PINOUT", "Load pinout before exporting PDF.");
 
-      const page1 = template.data.pages[0];
-      const page2 = template.data.pages[1];
-      const page1Calibration = buildPage1TemplateCalibration({
-        templateAnchors: DEFAULT_PAGE1_TEMPLATE_ANCHORS,
-        templatePageSizePt: { width: page1.widthPt, height: page1.heightPt },
-        targetViewportSizePx: { width: page1.widthPt, height: page1.heightPt },
-      });
-      const page1Primitives = buildPage1ExportPrimitives(page1OverlayModel, page1Calibration.overlayToViewportPx);
-
-      const page2Overlay = buildPage2OverlayModel(page2Scene);
-      const page2Calibration = buildPage2TemplateCalibration({
-        scene: page2Scene,
-        templateAnchors: DEFAULT_PAGE2_TEMPLATE_ANCHORS,
-        templatePageSizePt: { width: page2.widthPt, height: page2.heightPt },
-        targetViewportSizePx: { width: page2.widthPt, height: page2.heightPt },
-      });
-      const page2Primitives = buildPage2ExportPrimitives(page2Overlay, page2Calibration.overlayToViewportPx);
+      const page1 = loadedTemplate.pages[0];
+      const page2 = loadedTemplate.pages[1];
+      const page1Primitives = buildPage1PrimitivesForExport(page1, page1OverlayModel, calibrationProfile.page1);
+      const page2Primitives = buildPage2PrimitivesForExport(page2, page2Scene, calibrationProfile.page2);
 
       const pdfBytes = await exportDrawingPdf({
         pages: [
@@ -311,37 +330,47 @@ export function usePreviewState(): PreviewState {
       setActionMessage({ tone: "warn", text: toErrorMessage(error, "PDF export failed.") });
     }
   }, [
+    calibrationProfile.page1,
+    calibrationProfile.page2,
     page1OverlayModel,
     page2Scene,
-    pinout.data,
-    pinout.status,
-    template.data,
-    template.status,
+    pinout,
+    template,
   ]);
 
   const exportSvg = useCallback(async () => {
     try {
-      if (template.status !== "loaded" || !template.data) throw new Error("Load template before exporting SVG.");
-      const svg = exportCurrentPageSvg(template.data, activePage, page1OverlayModel, page2Scene);
+      const loadedTemplate = requireLoadedTemplate(template);
+      const svg = exportCurrentPageSvg(loadedTemplate, activePage, page1OverlayModel, page2Scene, {
+        page1: calibrationProfile.page1,
+        page2: calibrationProfile.page2,
+      });
       const fileName = activePage === 1 ? "harness_page1.svg" : "harness_page2.svg";
       downloadBlob(fileName, new Blob([svg], { type: "image/svg+xml" }));
       setActionMessage({ tone: "ok", text: "SVG export complete." });
     } catch (error) {
       setActionMessage({ tone: "warn", text: toErrorMessage(error, "SVG export failed.") });
     }
-  }, [activePage, page1OverlayModel, page2Scene, template.data, template.status]);
+  }, [
+    activePage,
+    calibrationProfile.page1,
+    calibrationProfile.page2,
+    page1OverlayModel,
+    page2Scene,
+    template,
+  ]);
 
   const exportDxf = useCallback(async () => {
     try {
-      if (template.status !== "loaded" || !template.data) throw new Error("Load template before exporting DXF.");
-      if (!page2Scene) throw new Error("Load pinout before exporting DXF.");
-      const dxf = exportPage2Dxf(template.data, page2Scene);
+      const loadedTemplate = requireLoadedTemplate(template);
+      if (!page2Scene) throw new PreviewActionError("MISSING_PINOUT", "Load pinout before exporting DXF.");
+      const dxf = exportPage2Dxf(loadedTemplate, page2Scene, calibrationProfile.page2);
       downloadBlob("harness_page2.dxf", new Blob([dxf], { type: "application/dxf" }));
       setActionMessage({ tone: "ok", text: "DXF export complete." });
     } catch (error) {
       setActionMessage({ tone: "warn", text: toErrorMessage(error, "DXF export failed.") });
     }
-  }, [page2Scene, template.data, template.status]);
+  }, [calibrationProfile.page2, page2Scene, template]);
 
   return {
     activePage,
@@ -367,6 +396,7 @@ export function usePreviewState(): PreviewState {
     setPage1CalloutValue,
     onProjectUpload,
     saveProjectJson,
+    canSaveProject,
     exportPdf,
     exportSvg,
     exportDxf,
@@ -375,5 +405,7 @@ export function usePreviewState(): PreviewState {
     canExport,
     page1OverlayModel,
     page2Scene,
+    page1TemplateAnchors: calibrationProfile.page1,
+    page2TemplateAnchors: calibrationProfile.page2,
   };
 }

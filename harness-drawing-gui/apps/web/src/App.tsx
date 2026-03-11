@@ -57,6 +57,7 @@ export default function App() {
           onPage1TitleFieldChange={preview.setPage1TitleBlockField}
           onPage1CalloutChange={preview.setPage1CalloutValue}
           onSaveProjectClick={() => void preview.saveProjectJson()}
+          canSaveProject={preview.canSaveProject}
           onExportPdfClick={() => void preview.exportPdf()}
           onExportSvgClick={() => void preview.exportSvg()}
           onExportDxfClick={() => void preview.exportDxf()}
@@ -68,6 +69,8 @@ export default function App() {
           template={preview.template}
           page1OverlayModel={preview.page1OverlayModel}
           page2Scene={preview.page2Scene}
+          page1TemplateAnchors={preview.page1TemplateAnchors}
+          page2TemplateAnchors={preview.page2TemplateAnchors}
         />
       </main>
     </div>

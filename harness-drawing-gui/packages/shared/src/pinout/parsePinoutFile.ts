@@ -16,13 +16,17 @@ function inferFileKind(fileName: string): PinoutFileKind {
 }
 
 function parseWorkbook(data: ArrayBuffer | string, kind: PinoutFileKind): XLSX.WorkBook {
-  if (kind === "csv") {
-    const text = typeof data === "string" ? data : new TextDecoder().decode(data);
-    return XLSX.read(text, { type: "string", raw: false });
-  }
+  try {
+    if (kind === "csv") {
+      const text = typeof data === "string" ? data : new TextDecoder().decode(data);
+      return XLSX.read(text, { type: "string", raw: false });
+    }
 
-  const arrayBuffer = typeof data === "string" ? new TextEncoder().encode(data).buffer : data;
-  return XLSX.read(arrayBuffer, { type: "array", raw: false });
+    const arrayBuffer = typeof data === "string" ? new TextEncoder().encode(data).buffer : data;
+    return XLSX.read(arrayBuffer, { type: "array", raw: false });
+  } catch {
+    throw new PinoutParseError("WORKBOOK_READ_FAILED", "Pinout workbook could not be read.");
+  }
 }
 
 export function parsePinoutFile(input: ParsePinoutFileInput): NormalizedPinout {

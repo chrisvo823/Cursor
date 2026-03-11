@@ -1,27 +1,19 @@
-# Implementation Plan
+# Implementation Plan (current state)
 
-## Phase 1 — Data and geometry
-- Finalize normalized row contract
-- Implement workbook/CSV parsing
-- Implement page geometry constants and scaling helpers
-- Add sample regression fixtures
+## Completed milestones
+- Parsing/normalization foundation is implemented in `packages/shared`.
+- Page 2 scene + dynamic overlay rendering is implemented in `packages/render` and `apps/web`.
+- Template-backed Page 1 overlay engine with editable fields is implemented.
+- Project JSON save/load schema v1 is implemented and validated.
+- Export adapters are implemented for PDF (2 pages), SVG (active page), and DXF (Page 2 vectors).
 
-## Phase 2 — Rendering
-- Build Page 2 SVG renderer first
-- Validate against `samples/Example.pdf`
-- Build Page 1 overlay renderer
-- Add project state serialization
+## Current hardening focus
+- Strengthen explicit validation and user-readable error messages across import/load/export flows.
+- Keep calibration deterministic and template-anchor-driven, with named profiles for sample templates.
+- Expand deterministic regression coverage using sample pinout fixture behavior.
+- Ensure preview and export continue to consume the same scene/overlay/calibration models.
 
-## Phase 3 — Exports
-- Add SVG export
-- Add PDF export using shared SVG render output
-- Add DXF export from geometry primitives
-
-## Phase 4 — Hardening
-- Add schema fallback logic for alternate pinout headers
-- Add error messages for malformed templates and unsupported workbooks
-- Add regression screenshots for sample inputs
-
-## Phase 5 — LdrDoc
-- Define a document model that can serialize to LdrDoc once requirements are fully pinned down
-- Keep it behind an exporter interface from the beginning
+## Next work after MVP hardening
+- Add optional calibration authoring/tuning UX for non-sample templates.
+- Add richer rear-view connector asset workflow and tooling metadata editing.
+- Add native LdrDoc/Altium writer using the existing shared geometry/export contracts.

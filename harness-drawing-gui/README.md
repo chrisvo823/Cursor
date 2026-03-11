@@ -1,8 +1,8 @@
 # Harness Drawing GUI
 
-Production-oriented MVP foundation for the harness drawing generator.
+Production-oriented engineering MVP for a template-backed harness drawing generator.
 
-This repo now includes real browser preview plumbing, Page 1/Page 2 editable overlays, project JSON save/load, and deterministic PDF/SVG/DXF export adapters driven by shared render models.
+The app currently supports template + pinout ingestion, deterministic Page 1/Page 2 preview overlays, project save/load JSON, and PDF/SVG/DXF exports from shared render models.
 
 ## What this product is
 
@@ -30,7 +30,7 @@ The uploaded materials establish three hard constraints:
 - `config/project.yaml` – machine-readable implementation brief for Cursor
 - `samples/` – reference assets copied from the conversation
 - `packages/shared/` – shared types, parsing, and pinout normalization
-- `packages/render/` – page scene builders and renderer-facing geometry
+- `packages/render/` – page scene builders, anchor calibration, and export primitives
 - `packages/core/` – legacy scaffold package kept for migration compatibility
 - `apps/web/` – React/Vite front-end with template upload + live drawing preview
 - `.cursor/rules/` – coding guardrails for Cursor
@@ -42,15 +42,23 @@ npm install
 npm run dev
 ```
 
-## Recommended build order
+## Implemented status
 
-1. Finish pinout normalization in `packages/shared`
-2. Lock page geometry in `packages/render`
-3. Implement Page 2 SVG renderer against render scenes
-4. Implement Page 1 overlay renderer
-5. Add project save/load
-6. Add PDF, SVG, DXF export
-7. Add LdrDoc exporter once the geometry model is stable
+- Template ingestion: validates PDF type and minimum two pages, rasterizes Page 1/Page 2 backgrounds for preview/export.
+- Pinout ingestion: parses `.xlsx`/`.xls`/`.csv`, normalizes common header aliases, defaults `used=true`, detects TP rows.
+- Preview pipeline: immutable template background plus dynamic SVG overlay for both pages.
+- Page 1 overlay: editable overall length, labels, notes, revision block, title block, and fixed callouts with note markers (05 triangle, 07 square).
+- Page 2 overlay: deterministic row mapping from `fromPin -> toPin`, pin dots/labels, wire geometry, row labels/meta text, TP figure-8 markers.
+- Project persistence: versioned schema `HARNESS_PROJECT_SCHEMA_VERSION = 1` with template snapshot + normalized pinout + page settings.
+- Export pipeline: 2-page PDF, active-page SVG, and Page 2 DXF; all driven from the same render/calibration models used in preview.
+- Calibration: explicit template anchors for Page 1/Page 2, plus named sample calibration profile path.
+
+## Reliability and validation hardening
+
+- Domain-specific errors are used for template validation, pinout parsing, and project schema compatibility.
+- Save/export actions fail with explicit user-readable precondition messages when template/pinout data is missing.
+- Project load validation rejects malformed template snapshots (for example missing embedded image data URLs).
+- Regression tests cover sample pinout crossover mapping, TP marker stability, calibration determinism, and overlay/export contracts.
 
 ## Important engineering decisions
 
@@ -58,15 +66,11 @@ npm run dev
 - Render the uploaded PDF template into per-page bitmap backgrounds for preview.
 - Keep **normalized pinout data** separate from **render geometry**.
 - Make exporters consume the same geometry model.
-- When only one `Signal Name` column exists, render it on both sides by default.
+- Keep connector column artwork template-backed only (no duplicate drawable connector bodies in overlays/exports).
 
-## Push to GitHub
+## Remaining gaps / future work
 
-```bash
-git init
-git add .
-git commit -m "Initial harness drawing GUI scaffold"
-git branch -M main
-git remote add origin <your-repo-url>
-git push -u origin main
-```
+- Template-specific calibration tuning UI (currently file-name-based profile selection + code config).
+- Optional connector rear-view image ingestion and tooling block authoring workflows.
+- Native Altium/LdrDoc writer (DXF is currently the vector interchange adapter).
+- Broader visual regression harness (screenshots) on top of existing deterministic model tests.

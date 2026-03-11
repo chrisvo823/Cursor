@@ -6,6 +6,8 @@ import type {
   ScenePoint,
 } from "../types";
 
+// These primitives are the shared contract between preview-calibrated geometry
+// and concrete exporters (PDF/SVG/DXF today, native LdrDoc later).
 export type ExportLayer = "HARNESS_WIRES" | "HARNESS_DOTS" | "HARNESS_TEXT" | "HARNESS_MARKERS";
 
 export type ExportLinePrimitive = {

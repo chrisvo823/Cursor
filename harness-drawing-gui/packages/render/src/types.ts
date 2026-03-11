@@ -223,6 +223,8 @@ export type Page1TemplateAnchorConfig = {
     maxLines: number;
     numberColumnWidth: number;
     markerOffsetX: number;
+    markerOffsetY: number;
+    markerSize: number;
     charWidthEstimate: number;
   };
   revisionRegion: {
@@ -243,6 +245,7 @@ export type Page1TemplateAnchorConfig = {
     y: number;
     radius: number;
   }>;
+  calloutTextOffsetY: number;
 };
 
 export type Page1OverlayText = {

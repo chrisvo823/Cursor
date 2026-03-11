@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 import { describe, expect, it } from "vitest";
-import { normalizePinoutRows, parsePinoutFile } from "../index";
+import { normalizePinoutRows, parsePinoutFile, PinoutParseError, selectBestWorkbookSheet } from "../index";
 
 describe("normalizePinoutRows", () => {
   it("normalizes aliases, defaults used=true, and sorts by pin mapping", () => {
@@ -74,5 +74,36 @@ describe("parsePinoutFile", () => {
 
     expect(normalized.diagnostics.selectedSheet).toBe("Ladder_26pin");
     expect(normalized.rows.map((row) => row.fromPin)).toEqual([1, 2]);
+  });
+
+  it("fails with explicit parse error for malformed workbook bytes", () => {
+    expect(() =>
+      parsePinoutFile({
+        fileName: "pinout.xlsx",
+        data: new Uint8Array([0, 1, 2, 3]).buffer,
+      }),
+    ).toThrow(PinoutParseError);
+
+    try {
+      parsePinoutFile({
+        fileName: "pinout.xlsx",
+        data: new Uint8Array([0, 1, 2, 3]).buffer,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(PinoutParseError);
+      expect((error as PinoutParseError).code).toBe("MISSING_REQUIRED_COLUMNS");
+    }
+  });
+});
+
+describe("selectBestWorkbookSheet", () => {
+  it("fails explicitly when no visible worksheet candidates exist", () => {
+    expect(() => selectBestWorkbookSheet([])).toThrow(PinoutParseError);
+    try {
+      selectBestWorkbookSheet([]);
+    } catch (error) {
+      expect(error).toBeInstanceOf(PinoutParseError);
+      expect((error as PinoutParseError).code).toBe("WORKBOOK_NO_SHEETS");
+    }
   });
 });

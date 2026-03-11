@@ -1,10 +1,10 @@
 import {
-  DEFAULT_PAGE1_TEMPLATE_ANCHORS,
-  DEFAULT_PAGE2_TEMPLATE_ANCHORS,
   buildPage1TemplateCalibration,
   buildPage2OverlayModel,
   buildPage2TemplateCalibration,
+  type Page1TemplateAnchorConfig,
   type Page1OverlayModel,
+  type Page2TemplateAnchorConfig,
   type Page2Scene,
 } from "@harness/render";
 import { useEffect, useMemo, useRef } from "react";
@@ -19,6 +19,8 @@ type PreviewCanvasProps = {
   template: ResourceState<LoadedTemplatePdf>;
   page1OverlayModel: Page1OverlayModel;
   page2Scene: Page2Scene | null;
+  page1TemplateAnchors: Page1TemplateAnchorConfig;
+  page2TemplateAnchors: Page2TemplateAnchorConfig;
 };
 
 function centerScroll(container: HTMLDivElement | null): void {
@@ -27,7 +29,14 @@ function centerScroll(container: HTMLDivElement | null): void {
   container.scrollTop = Math.max((container.scrollHeight - container.clientHeight) / 2, 0);
 }
 
-export function PreviewCanvas({ activePage, template, page1OverlayModel, page2Scene }: PreviewCanvasProps) {
+export function PreviewCanvas({
+  activePage,
+  template,
+  page1OverlayModel,
+  page2Scene,
+  page1TemplateAnchors,
+  page2TemplateAnchors,
+}: PreviewCanvasProps) {
   const paperWrapRef = useRef<HTMLDivElement>(null);
   const templatePage = template.data ? template.data.pages[activePage - 1] : null;
 
@@ -41,7 +50,7 @@ export function PreviewCanvas({ activePage, template, page1OverlayModel, page2Sc
     if (!page2Scene) return null;
     const calibration = buildPage2TemplateCalibration({
       scene: page2Scene,
-      templateAnchors: DEFAULT_PAGE2_TEMPLATE_ANCHORS,
+      templateAnchors: page2TemplateAnchors,
       templatePageSizePt: {
         width: templatePage.widthPt,
         height: templatePage.heightPt,
@@ -52,12 +61,12 @@ export function PreviewCanvas({ activePage, template, page1OverlayModel, page2Sc
       },
     });
     return calibration.overlayToViewportPx;
-  }, [overlayModel, page2Scene, templatePage]);
+  }, [overlayModel, page2Scene, page2TemplateAnchors, templatePage]);
 
   const page1OverlayTransform = useMemo(() => {
     if (!templatePage) return null;
     const calibration = buildPage1TemplateCalibration({
-      templateAnchors: DEFAULT_PAGE1_TEMPLATE_ANCHORS,
+      templateAnchors: page1TemplateAnchors,
       templatePageSizePt: {
         width: templatePage.widthPt,
         height: templatePage.heightPt,
@@ -68,7 +77,7 @@ export function PreviewCanvas({ activePage, template, page1OverlayModel, page2Sc
       },
     });
     return calibration.overlayToViewportPx;
-  }, [templatePage]);
+  }, [page1TemplateAnchors, templatePage]);
 
   useEffect(() => {
     centerScroll(paperWrapRef.current);

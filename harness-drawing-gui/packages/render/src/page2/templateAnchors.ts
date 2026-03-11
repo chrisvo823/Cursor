@@ -31,3 +31,8 @@ export const DEFAULT_PAGE2_TEMPLATE_ANCHORS: Page2TemplateAnchorConfig = {
     height: 34,
   },
 };
+
+// Sample calibration profile for reference ladder templates; keep as named preset for future expansion.
+export const SAMPLE_LADDER_26PIN_PAGE2_TEMPLATE_ANCHORS: Page2TemplateAnchorConfig = {
+  ...DEFAULT_PAGE2_TEMPLATE_ANCHORS,
+};

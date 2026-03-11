@@ -1,4 +1,5 @@
 import { scoreHeaderCoverage } from "./normalizePinoutRows";
+import { PinoutParseError } from "./errors";
 
 type WorksheetRows = Record<string, unknown>[];
 
@@ -27,7 +28,7 @@ function scoreSheet(candidate: WorkbookSheetCandidate): number {
 
 export function selectBestWorkbookSheet(candidates: WorkbookSheetCandidate[]): WorkbookSheetCandidate {
   if (candidates.length === 0) {
-    throw new Error("Workbook has no visible sheets.");
+    throw new PinoutParseError("WORKBOOK_NO_SHEETS", "Workbook has no visible worksheets.");
   }
 
   const preferred = candidates.find((candidate) => normalizeName(candidate.sheetName) === PREFERRED_SHEET);

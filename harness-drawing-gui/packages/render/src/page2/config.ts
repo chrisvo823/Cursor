@@ -1,11 +1,8 @@
 import type { Page2LayoutOptions, PageSizePt } from "../types";
 
-export const DEFAULT_PAGE_SIZE_PT: PageSizePt = {
-  width: 720,
-  height: 405,
-};
-
 export const PAGE2_BASE_GEOMETRY = {
+  pageWidthPt: 720,
+  pageHeightPt: 405,
   leftColumnX: 178,
   rightColumnX: 492,
   columnY: 96,
@@ -21,12 +18,19 @@ export const PAGE2_BASE_GEOMETRY = {
   headingY: 70,
   subtitleY: 78,
   toolingY: 357,
+  leftToolingX: 113,
+  rightToolingX: 525,
   labelNudgeY: 2,
   leftLabelX: 182,
   rightLabelX: 524,
   tpMarkerOffsetX: 8,
   tpMarkerOffsetY: 2,
 } as const;
+
+export const DEFAULT_PAGE_SIZE_PT: PageSizePt = {
+  width: PAGE2_BASE_GEOMETRY.pageWidthPt,
+  height: PAGE2_BASE_GEOMETRY.pageHeightPt,
+};
 
 export const DEFAULT_PAGE2_LAYOUT: Page2LayoutOptions = {
   linePitchMm: 9.5,
