@@ -47,8 +47,21 @@ export default function App() {
           pinCount={pinCount}
           twistedPairCount={preview.twistedPairCount}
           activeSheetName={preview.activeSheetName}
+          page1Fields={preview.page1Fields}
+          onPage1OverallLengthChange={preview.setPage1OverallLength}
+          onPage1LabelAChange={preview.setPage1LabelA}
+          onPage1LabelBChange={preview.setPage1LabelB}
+          onPage1NotesChange={preview.setPage1NotesText}
+          onPage1RevisionFieldChange={preview.setPage1RevisionField}
+          onPage1TitleFieldChange={preview.setPage1TitleBlockField}
+          onPage1CalloutChange={preview.setPage1CalloutValue}
         />
-        <PreviewCanvas activePage={preview.activePage} template={preview.template} page2Scene={preview.page2Scene} />
+        <PreviewCanvas
+          activePage={preview.activePage}
+          template={preview.template}
+          page1OverlayModel={preview.page1OverlayModel}
+          page2Scene={preview.page2Scene}
+        />
       </main>
     </div>
   );

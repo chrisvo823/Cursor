@@ -1,18 +1,23 @@
 import {
+  DEFAULT_PAGE1_TEMPLATE_ANCHORS,
   DEFAULT_PAGE2_TEMPLATE_ANCHORS,
+  buildPage1TemplateCalibration,
   buildPage2OverlayModel,
   buildPage2TemplateCalibration,
+  type Page1OverlayModel,
   type Page2Scene,
 } from "@harness/render";
 import { useEffect, useMemo, useRef } from "react";
 import type { ActivePreviewPage } from "../lib/preview/usePreviewState";
 import type { ResourceState } from "../lib/preview/previewStateModel";
 import type { LoadedTemplatePdf } from "../lib/template/loadTemplatePdf";
+import { Page1OverlaySvg } from "./Page1OverlaySvg";
 import { Page2OverlaySvg } from "./Page2OverlaySvg";
 
 type PreviewCanvasProps = {
   activePage: ActivePreviewPage;
   template: ResourceState<LoadedTemplatePdf>;
+  page1OverlayModel: Page1OverlayModel;
   page2Scene: Page2Scene | null;
 };
 
@@ -22,7 +27,7 @@ function centerScroll(container: HTMLDivElement | null): void {
   container.scrollTop = Math.max((container.scrollHeight - container.clientHeight) / 2, 0);
 }
 
-export function PreviewCanvas({ activePage, template, page2Scene }: PreviewCanvasProps) {
+export function PreviewCanvas({ activePage, template, page1OverlayModel, page2Scene }: PreviewCanvasProps) {
   const paperWrapRef = useRef<HTMLDivElement>(null);
   const templatePage = template.data ? template.data.pages[activePage - 1] : null;
 
@@ -48,6 +53,22 @@ export function PreviewCanvas({ activePage, template, page2Scene }: PreviewCanva
     });
     return calibration.overlayToViewportPx;
   }, [overlayModel, page2Scene, templatePage]);
+
+  const page1OverlayTransform = useMemo(() => {
+    if (!templatePage) return null;
+    const calibration = buildPage1TemplateCalibration({
+      templateAnchors: DEFAULT_PAGE1_TEMPLATE_ANCHORS,
+      templatePageSizePt: {
+        width: templatePage.widthPt,
+        height: templatePage.heightPt,
+      },
+      targetViewportSizePx: {
+        width: templatePage.bitmapWidthPx,
+        height: templatePage.bitmapHeightPx,
+      },
+    });
+    return calibration.overlayToViewportPx;
+  }, [templatePage]);
 
   useEffect(() => {
     centerScroll(paperWrapRef.current);
@@ -93,15 +114,13 @@ export function PreviewCanvas({ activePage, template, page2Scene }: PreviewCanva
               <Page2OverlaySvg overlay={overlayModel} transform={overlayTransform} />
             ) : null}
 
+            {activePage === 1 && page1OverlayTransform ? (
+              <Page1OverlaySvg overlay={page1OverlayModel} transform={page1OverlayTransform} />
+            ) : null}
+
             {activePage === 2 && !overlayModel ? (
               <text x={20} y={30} className="svg-overlay-note">
                 Upload pinout file to render Page 2 overlay.
-              </text>
-            ) : null}
-
-            {activePage === 1 ? (
-              <text x={20} y={30} className="svg-overlay-note">
-                Page 1 overlay rendering starts in the next milestone.
               </text>
             ) : null}
           </svg>

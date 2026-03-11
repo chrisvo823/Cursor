@@ -171,3 +171,123 @@ export type Page2TemplateCalibration = {
   overlayToTemplatePt: Page2OverlayTransform;
   overlayToViewportPx: Page2OverlayTransform;
 };
+
+export type Page1RevisionFields = {
+  rev: string;
+  desc: string;
+  date: string;
+  by: string;
+};
+
+export type Page1TitleBlockFields = {
+  title: string;
+  number: string;
+  revision: string;
+  sheet: string;
+  date: string;
+  file: string;
+};
+
+export type Page1CalloutField = {
+  id: string;
+  value: string;
+};
+
+export type Page1OverlayFields = {
+  overallLength: string;
+  labelA: string;
+  labelB: string;
+  notesText: string;
+  revision: Page1RevisionFields;
+  titleBlock: Page1TitleBlockFields;
+  callouts: Page1CalloutField[];
+};
+
+export type Page1NoteMarkerType = "triangle" | "square";
+
+export type Page1ParsedNote = {
+  number: string;
+  body: string;
+};
+
+export type Page1TemplateAnchorConfig = {
+  templatePageSizePt: PageSizePt;
+  overallLengthAnchor: ScenePoint;
+  labelAAnchor: ScenePoint;
+  labelBAnchor: ScenePoint;
+  notesRegion: {
+    x: number;
+    y: number;
+    width: number;
+    lineHeight: number;
+    maxLines: number;
+    numberColumnWidth: number;
+    markerOffsetX: number;
+    charWidthEstimate: number;
+  };
+  revisionRegion: {
+    x: number;
+    y: number;
+    rowGap: number;
+    valueOffsetX: number;
+  };
+  titleBlockRegion: {
+    x: number;
+    y: number;
+    rowGap: number;
+    valueOffsetX: number;
+  };
+  calloutAnchors: Array<{
+    id: string;
+    x: number;
+    y: number;
+    radius: number;
+  }>;
+};
+
+export type Page1OverlayText = {
+  id: string;
+  value: string;
+  x: number;
+  y: number;
+  textAnchor?: "start" | "middle" | "end";
+  tone: "notes" | "fieldLabel" | "fieldValue" | "callout";
+};
+
+export type Page1OverlayMarker = {
+  id: string;
+  type: Page1NoteMarkerType;
+  x: number;
+  y: number;
+  size: number;
+};
+
+export type Page1OverlayCallout = {
+  id: string;
+  x: number;
+  y: number;
+  radius: number;
+  value: string;
+};
+
+export type Page1OverlayModel = {
+  sceneWidth: number;
+  sceneHeight: number;
+  texts: Page1OverlayText[];
+  markers: Page1OverlayMarker[];
+  callouts: Page1OverlayCallout[];
+};
+
+export type Page1TemplateCalibration = {
+  viewportFit: {
+    sourcePageSizePt: PageSizePt;
+    targetViewportSizePx: {
+      width: number;
+      height: number;
+    };
+    scaleX: number;
+    scaleY: number;
+  };
+  templateAnchors: Page1TemplateAnchorConfig;
+  overlayToViewportPx: Page2OverlayTransform;
+};

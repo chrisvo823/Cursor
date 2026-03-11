@@ -30,6 +30,10 @@ input {
   font: inherit;
 }
 
+textarea {
+  font: inherit;
+}
+
 .shell {
   min-height: 100vh;
 }
@@ -147,6 +151,21 @@ input[type="file"] {
   border-radius: 12px;
   border: 1px dashed rgba(255, 255, 255, 0.14);
   background: rgba(0, 0, 0, 0.16);
+}
+
+.control-rail input[type="text"],
+.control-rail textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text);
+}
+
+.textarea-field {
+  min-height: 132px;
+  resize: vertical;
 }
 
 .grid-two {
@@ -279,6 +298,42 @@ button:disabled {
   fill: #1b2e9e;
   font-size: 3px;
   font-weight: 600;
+}
+
+.svg-page1-notes {
+  fill: #12203d;
+  font-size: 4.1px;
+  font-weight: 500;
+}
+
+.svg-page1-field-label {
+  fill: #1b2e9e;
+  font-size: 4px;
+  font-weight: 700;
+}
+
+.svg-page1-field-value {
+  fill: #0d1a34;
+  font-size: 4.4px;
+  font-weight: 600;
+}
+
+.svg-page1-callout-circle {
+  fill: rgba(255, 248, 220, 0.2);
+  stroke: #6e6f73;
+  stroke-width: 0.8;
+}
+
+.svg-page1-callout-text {
+  fill: #0d1a34;
+  font-size: 4.2px;
+  font-weight: 700;
+}
+
+.svg-page1-marker {
+  fill: none;
+  stroke: #2f58d8;
+  stroke-width: 0.9;
 }
 
 .svg-overlay-note {

@@ -1,5 +1,6 @@
 import type { ActivePreviewPage } from "../lib/preview/usePreviewState";
 import type { ResourceStatus } from "../lib/preview/previewStateModel";
+import type { Page1OverlayFields } from "@harness/render";
 
 type ControlRailProps = {
   activePage: ActivePreviewPage;
@@ -18,6 +19,14 @@ type ControlRailProps = {
   pinCount: number;
   twistedPairCount: number;
   activeSheetName: string | null;
+  page1Fields: Page1OverlayFields;
+  onPage1OverallLengthChange: (value: string) => void;
+  onPage1LabelAChange: (value: string) => void;
+  onPage1LabelBChange: (value: string) => void;
+  onPage1NotesChange: (value: string) => void;
+  onPage1RevisionFieldChange: (key: keyof Page1OverlayFields["revision"], value: string) => void;
+  onPage1TitleFieldChange: (key: keyof Page1OverlayFields["titleBlock"], value: string) => void;
+  onPage1CalloutChange: (id: string, value: string) => void;
 };
 
 export function ControlRail({
@@ -37,6 +46,14 @@ export function ControlRail({
   pinCount,
   twistedPairCount,
   activeSheetName,
+  page1Fields,
+  onPage1OverallLengthChange,
+  onPage1LabelAChange,
+  onPage1LabelBChange,
+  onPage1NotesChange,
+  onPage1RevisionFieldChange,
+  onPage1TitleFieldChange,
+  onPage1CalloutChange,
 }: ControlRailProps) {
   return (
     <aside className="control-rail">
@@ -110,14 +127,156 @@ export function ControlRail({
       </section>
 
       <section className="panel-section">
-        <h2>3) Data summary</h2>
+        <h2>3) Page 1 fields</h2>
+        <div className="field">
+          <label>Overall length</label>
+          <input
+            type="text"
+            value={page1Fields.overallLength}
+            onChange={(event) => onPage1OverallLengthChange(event.currentTarget.value)}
+          />
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Label A</label>
+            <input
+              type="text"
+              value={page1Fields.labelA}
+              onChange={(event) => onPage1LabelAChange(event.currentTarget.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Label B</label>
+            <input
+              type="text"
+              value={page1Fields.labelB}
+              onChange={(event) => onPage1LabelBChange(event.currentTarget.value)}
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label>Notes block</label>
+          <textarea
+            className="textarea-field"
+            value={page1Fields.notesText}
+            onChange={(event) => onPage1NotesChange(event.currentTarget.value)}
+          />
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Revision</label>
+            <input
+              type="text"
+              value={page1Fields.revision.rev}
+              onChange={(event) => onPage1RevisionFieldChange("rev", event.currentTarget.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Revision by</label>
+            <input
+              type="text"
+              value={page1Fields.revision.by}
+              onChange={(event) => onPage1RevisionFieldChange("by", event.currentTarget.value)}
+            />
+          </div>
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Revision desc</label>
+            <input
+              type="text"
+              value={page1Fields.revision.desc}
+              onChange={(event) => onPage1RevisionFieldChange("desc", event.currentTarget.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Revision date</label>
+            <input
+              type="text"
+              value={page1Fields.revision.date}
+              onChange={(event) => onPage1RevisionFieldChange("date", event.currentTarget.value)}
+            />
+          </div>
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Title</label>
+            <input
+              type="text"
+              value={page1Fields.titleBlock.title}
+              onChange={(event) => onPage1TitleFieldChange("title", event.currentTarget.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Number</label>
+            <input
+              type="text"
+              value={page1Fields.titleBlock.number}
+              onChange={(event) => onPage1TitleFieldChange("number", event.currentTarget.value)}
+            />
+          </div>
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Sheet</label>
+            <input
+              type="text"
+              value={page1Fields.titleBlock.sheet}
+              onChange={(event) => onPage1TitleFieldChange("sheet", event.currentTarget.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Title revision</label>
+            <input
+              type="text"
+              value={page1Fields.titleBlock.revision}
+              onChange={(event) => onPage1TitleFieldChange("revision", event.currentTarget.value)}
+            />
+          </div>
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Title date</label>
+            <input
+              type="text"
+              value={page1Fields.titleBlock.date}
+              onChange={(event) => onPage1TitleFieldChange("date", event.currentTarget.value)}
+            />
+          </div>
+          <div className="field">
+            <label>File</label>
+            <input
+              type="text"
+              value={page1Fields.titleBlock.file}
+              onChange={(event) => onPage1TitleFieldChange("file", event.currentTarget.value)}
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label>Callouts</label>
+          <div className="grid-two">
+            {page1Fields.callouts.map((callout) => (
+              <input
+                key={callout.id}
+                type="text"
+                value={callout.value}
+                onChange={(event) => onPage1CalloutChange(callout.id, event.currentTarget.value)}
+                aria-label={`Callout ${callout.id}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="panel-section">
+        <h2>4) Data summary</h2>
         <p>{parsedConnectionCount} parsed connections · {pinCount} pins</p>
         <p>TP rows: {twistedPairCount}</p>
         <p>Sheet: {activeSheetName ?? "—"}</p>
       </section>
 
       <section className="panel-section">
-        <h2>4) Export</h2>
+        <h2>5) Export</h2>
         <div className="button-row">
           <button className="primary" disabled>Export PDF</button>
           <button disabled>Export SVG</button>

@@ -4,3 +4,7 @@ export * from "./page2/buildPage2Scene";
 export * from "./page2/buildPage2OverlayModel";
 export * from "./page2/calibration";
 export * from "./page2/templateAnchors";
+export * from "./page1/anchors";
+export * from "./page1/notes";
+export * from "./page1/buildPage1OverlayModel";
+export * from "./page1/calibration";
