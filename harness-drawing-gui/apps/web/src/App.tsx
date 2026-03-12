@@ -25,7 +25,7 @@ export default function App() {
             value={preview.template.status === "loaded" ? "loaded" : "not loaded"}
             tone={preview.template.status === "loaded" ? "ok" : preview.template.status === "error" ? "warn" : "neutral"}
           />
-          <StatusPill label="Active page" value={`Page ${preview.activePage}`} />
+          <StatusPill label="Active page" value={preview.activePage === "split" ? "Split view" : `Page ${preview.activePage}`} />
         </div>
       </header>
 

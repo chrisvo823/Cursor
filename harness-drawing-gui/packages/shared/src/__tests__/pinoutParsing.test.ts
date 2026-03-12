@@ -94,6 +94,15 @@ describe("parsePinoutFile", () => {
       expect((error as PinoutParseError).code).toBe("MISSING_REQUIRED_COLUMNS");
     }
   });
+
+  it("rejects TP groups outside TP1-TP6", () => {
+    expect(() =>
+      parsePinoutFile({
+        fileName: "pinout.csv",
+        data: ["from pin,to pin,pair,type", "1,2,TP8,TP"].join("\n"),
+      }),
+    ).toThrow(PinoutParseError);
+  });
 });
 
 describe("selectBestWorkbookSheet", () => {

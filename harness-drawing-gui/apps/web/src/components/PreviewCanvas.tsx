@@ -38,56 +38,101 @@ export function PreviewCanvas({
   page2TemplateAnchors,
 }: PreviewCanvasProps) {
   const paperWrapRef = useRef<HTMLDivElement>(null);
-  const templatePage = template.data ? template.data.pages[activePage - 1] : null;
+  const page1Template = template.data?.pages[0] ?? null;
+  const page2Template = template.data?.pages[1] ?? null;
 
   const overlayModel = useMemo(() => {
-    if (activePage !== 2 || !page2Scene) return null;
+    if (!page2Scene) return null;
     return buildPage2OverlayModel(page2Scene);
-  }, [activePage, page2Scene]);
+  }, [page2Scene]);
 
   const overlayTransform = useMemo(() => {
-    if (!templatePage || !overlayModel) return null;
+    if (!page2Template || !overlayModel) return null;
     if (!page2Scene) return null;
     const calibration = buildPage2TemplateCalibration({
       scene: page2Scene,
       templateAnchors: page2TemplateAnchors,
       templatePageSizePt: {
-        width: templatePage.widthPt,
-        height: templatePage.heightPt,
+        width: page2Template.widthPt,
+        height: page2Template.heightPt,
       },
       targetViewportSizePx: {
-        width: templatePage.bitmapWidthPx,
-        height: templatePage.bitmapHeightPx,
+        width: page2Template.bitmapWidthPx,
+        height: page2Template.bitmapHeightPx,
       },
     });
     return calibration.overlayToViewportPx;
-  }, [overlayModel, page2Scene, page2TemplateAnchors, templatePage]);
+  }, [overlayModel, page2Scene, page2TemplateAnchors, page2Template]);
 
   const page1OverlayTransform = useMemo(() => {
-    if (!templatePage) return null;
+    if (!page1Template) return null;
     const calibration = buildPage1TemplateCalibration({
       templateAnchors: page1TemplateAnchors,
       templatePageSizePt: {
-        width: templatePage.widthPt,
-        height: templatePage.heightPt,
+        width: page1Template.widthPt,
+        height: page1Template.heightPt,
       },
       targetViewportSizePx: {
-        width: templatePage.bitmapWidthPx,
-        height: templatePage.bitmapHeightPx,
+        width: page1Template.bitmapWidthPx,
+        height: page1Template.bitmapHeightPx,
       },
     });
     return calibration.overlayToViewportPx;
-  }, [page1TemplateAnchors, templatePage]);
+  }, [page1Template, page1TemplateAnchors]);
 
   useEffect(() => {
     centerScroll(paperWrapRef.current);
-  }, [activePage, templatePage?.imageDataUrl]);
+  }, [activePage, page1Template?.imageDataUrl, page2Template?.imageDataUrl]);
+
+  const renderPageSvg = (
+    pageNumber: 1 | 2,
+    options: {
+      className?: string;
+      ariaLabel?: string;
+    } = {},
+  ) => {
+    const templatePage = pageNumber === 1 ? page1Template : page2Template;
+    if (!templatePage) return null;
+    return (
+      <svg
+        viewBox={`0 0 ${templatePage.bitmapWidthPx} ${templatePage.bitmapHeightPx}`}
+        className={options.className ?? "paper-svg"}
+        style={{ aspectRatio: `${templatePage.widthPt} / ${templatePage.heightPt}` }}
+        aria-label={options.ariaLabel ?? `Harness page ${pageNumber} preview`}
+      >
+        <image
+          href={templatePage.imageDataUrl}
+          x={0}
+          y={0}
+          width={templatePage.bitmapWidthPx}
+          height={templatePage.bitmapHeightPx}
+          preserveAspectRatio="none"
+        />
+
+        {pageNumber === 2 && overlayModel && overlayTransform ? (
+          <Page2OverlaySvg overlay={overlayModel} transform={overlayTransform} />
+        ) : null}
+
+        {pageNumber === 1 && page1OverlayTransform ? (
+          <Page1OverlaySvg overlay={page1OverlayModel} transform={page1OverlayTransform} />
+        ) : null}
+
+        {pageNumber === 2 && !overlayModel ? (
+          <text x={20} y={30} className="svg-overlay-note">
+            Upload pinout file to render Page 2 overlay.
+          </text>
+        ) : null}
+      </svg>
+    );
+  };
 
   return (
     <section className="preview-pane">
       <div className="preview-header">
         <div>
-          <div className="preview-title">Drawing preview · Page {activePage}</div>
+          <div className="preview-title">
+            Drawing preview · {activePage === "split" ? "Split View" : `Page ${activePage}`}
+          </div>
           <div className="preview-subtitle">Template bitmap background + vector overlay scene</div>
         </div>
         <div className="button-row">
@@ -103,37 +148,16 @@ export function PreviewCanvas({
           <div className="preview-message">Upload a 2-page template PDF and a pinout file to start previewing.</div>
         ) : null}
 
-        {templatePage ? (
-          <svg
-            viewBox={`0 0 ${templatePage.bitmapWidthPx} ${templatePage.bitmapHeightPx}`}
-            className="paper-svg"
-            style={{ aspectRatio: `${templatePage.widthPt} / ${templatePage.heightPt}` }}
-            aria-label={`Harness page ${activePage} preview`}
-          >
-            <image
-              href={templatePage.imageDataUrl}
-              x={0}
-              y={0}
-              width={templatePage.bitmapWidthPx}
-              height={templatePage.bitmapHeightPx}
-              preserveAspectRatio="none"
-            />
-
-            {activePage === 2 && overlayModel && overlayTransform ? (
-              <Page2OverlaySvg overlay={overlayModel} transform={overlayTransform} />
-            ) : null}
-
-            {activePage === 1 && page1OverlayTransform ? (
-              <Page1OverlaySvg overlay={page1OverlayModel} transform={page1OverlayTransform} />
-            ) : null}
-
-            {activePage === 2 && !overlayModel ? (
-              <text x={20} y={30} className="svg-overlay-note">
-                Upload pinout file to render Page 2 overlay.
-              </text>
-            ) : null}
-          </svg>
+        {activePage === "split" ? (
+          <div className="paper-split">
+            {renderPageSvg(1, { className: "paper-svg paper-split-item", ariaLabel: "Harness page 1 split preview" })}
+            {renderPageSvg(2, { className: "paper-svg paper-split-item", ariaLabel: "Harness page 2 split preview" })}
+          </div>
+        ) : activePage === 1 ? (
+          renderPageSvg(1)
         ) : null}
+
+        {activePage === 2 ? renderPageSvg(2) : null}
       </div>
     </section>
   );

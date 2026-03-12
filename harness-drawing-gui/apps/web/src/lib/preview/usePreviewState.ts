@@ -47,7 +47,7 @@ import {
 } from "./previewStateModel";
 import { resolveTemplateCalibrationProfile } from "../template/calibrationProfile";
 
-export type ActivePreviewPage = 1 | 2;
+export type ActivePreviewPage = 1 | 2 | "split";
 
 export type PreviewActionMessage = {
   tone: "ok" | "warn";
@@ -431,13 +431,17 @@ export function usePreviewState(): PreviewState {
   const exportSvg = useCallback(async () => {
     try {
       const loadedTemplate = requireLoadedTemplate(template);
-      const svg = exportCurrentPageSvg(loadedTemplate, activePage, page1OverlayModel, page2Scene, {
+      const exportPage: 1 | 2 = activePage === "split" ? 2 : activePage;
+      const svg = exportCurrentPageSvg(loadedTemplate, exportPage, page1OverlayModel, page2Scene, {
         page1: calibrationProfile.page1,
         page2: calibrationProfile.page2,
       });
-      const fileName = activePage === 1 ? "harness_page1.svg" : "harness_page2.svg";
+      const fileName = exportPage === 1 ? "harness_page1.svg" : "harness_page2.svg";
       downloadBlob(fileName, new Blob([svg], { type: "image/svg+xml" }));
-      setActionMessage({ tone: "ok", text: "SVG export complete." });
+      setActionMessage({
+        tone: "ok",
+        text: activePage === "split" ? "SVG export complete (Page 2 from split view)." : "SVG export complete.",
+      });
     } catch (error) {
       setActionMessage({ tone: "warn", text: toErrorMessage(error, "SVG export failed.") });
     }

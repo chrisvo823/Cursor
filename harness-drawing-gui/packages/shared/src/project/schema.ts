@@ -2,7 +2,7 @@ import type { NormalizedPinout } from "../types";
 
 export const HARNESS_PROJECT_SCHEMA_VERSION = 1;
 
-export type ProjectActivePage = 1 | 2;
+export type ProjectActivePage = 1 | 2 | "split";
 
 export type ProjectTemplatePage = {
   pageNumber: 1 | 2;
@@ -279,7 +279,7 @@ export function parseProjectDocument(raw: unknown): HarnessProjectDocumentV1 {
   const page1 = validatePage1Fields(raw.page1);
   const page2 = validatePage2State(raw.page2);
   assert(isObject(raw.ui), "UI section is required.");
-  const activePage = raw.ui.activePage === 1 ? 1 : 2;
+  const activePage: ProjectActivePage = raw.ui.activePage === "split" ? "split" : raw.ui.activePage === 1 ? 1 : 2;
 
   return {
     schemaVersion: HARNESS_PROJECT_SCHEMA_VERSION,

@@ -135,6 +135,12 @@ export function ControlRail({
               >
                 Page 2
               </button>
+              <button
+                className={activePage === "split" ? "chip chip-active" : "chip"}
+                onClick={() => onActivePageChange("split")}
+              >
+                Split View
+              </button>
             </div>
           </div>
           <div className="field">

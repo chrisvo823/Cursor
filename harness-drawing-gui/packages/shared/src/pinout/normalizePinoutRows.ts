@@ -23,6 +23,7 @@ const COLOR_ABBREVIATIONS: Record<string, string> = {
 };
 
 const MIN_PIN_COUNT = 10;
+const VALID_TP_GROUPS = new Set(["TP1", "TP2", "TP3", "TP4", "TP5", "TP6"]);
 
 function normalizeCellValue(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -121,8 +122,14 @@ export function normalizePinoutRows(
     const signalName = signalNameKey ? normalizeCellValue(row[signalNameKey]) : "";
     const leftLabel = leftLabelKey ? normalizeCellValue(row[leftLabelKey]) : signalName;
     const rightLabel = rightLabelKey ? normalizeCellValue(row[rightLabelKey]) : signalName;
-    const pair = pairKey ? normalizeCellValue(row[pairKey]) : "";
+    const pair = pairKey ? normalizeCellValue(row[pairKey]).toUpperCase() : "";
     const wireType = isTwistedPair(typeKey ? row[typeKey] : "", pair) ? "TP" : "AWG";
+    if (wireType === "TP" && pair.length > 0 && !VALID_TP_GROUPS.has(pair)) {
+      throw new PinoutParseError(
+        "INVALID_TP_GROUP",
+        `Invalid TP group "${pair}" on source row ${index + 2}. Allowed values: TP1-TP6.`,
+      );
+    }
 
     normalizedRows.push({
       fromPin,

@@ -4,6 +4,7 @@ export type PinoutParseErrorCode =
   | "WORKBOOK_NO_SHEETS"
   | "WORKBOOK_READ_FAILED"
   | "MISSING_REQUIRED_COLUMNS"
+  | "INVALID_TP_GROUP"
   | "NO_USABLE_ROWS";
 
 export class PinoutParseError extends Error {
