@@ -185,10 +185,17 @@ export function usePreviewState(): PreviewState {
   const parsedConnectionCount = pinout.data?.rows.filter((row) => row.used).length ?? 0;
   const twistedPairCount = pinout.data?.rows.filter((row) => row.type === "TP").length ?? 0;
   const activeSheetName = pinout.data?.diagnostics.selectedSheet ?? null;
-  const calibrationProfile = useMemo(
-    () => resolveTemplateCalibrationProfile(template.data?.fileName),
-    [template.data?.fileName],
-  );
+  const calibrationProfile = useMemo(() => {
+    return resolveTemplateCalibrationProfile({
+      templateFileName: template.data?.fileName ?? null,
+      page1SizePt: template.data
+        ? { width: template.data.pages[0].widthPt, height: template.data.pages[0].heightPt }
+        : null,
+      page2SizePt: template.data
+        ? { width: template.data.pages[1].widthPt, height: template.data.pages[1].heightPt }
+        : null,
+    });
+  }, [template.data]);
   const page1OverlayModel = useMemo(
     () => buildPage1OverlayModel(page1Fields, calibrationProfile.page1),
     [calibrationProfile.page1, page1Fields],

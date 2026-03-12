@@ -86,6 +86,8 @@ describe("buildPage2TemplateCalibration", () => {
     expect(calibration.overlayToViewportPx.scaleX).toBeCloseTo(2.5, 4);
     expect(calibration.overlayToViewportPx.offsetX).toBeCloseTo(0, 4);
     expect(calibration.templateAnchors.leftRailX).toBe(215);
+    expect(calibration.templateAnchors.rightRailX).toBe(470);
     expect(calibration.overlayAnchors.leftRailX).toBe(scene.leftColumn.railX);
+    expect(calibration.overlayAnchors.rightRailX).toBe(scene.rightColumn.railX);
   });
 });

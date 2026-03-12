@@ -76,6 +76,8 @@ describe("buildPage2Scene", () => {
     expect(scene.wires[1].leftTpMarkerCenter).toBeUndefined();
     expect(scene.leftColumn.name).toBe("P2");
     expect(scene.rightColumn.name).toBe("P4");
+    expect(scene.leftColumn.railX).toBe(215);
+    expect(scene.rightColumn.railX).toBe(470);
   });
 
   it("expands connector columns only when enabled", () => {

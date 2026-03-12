@@ -315,19 +315,19 @@ button:disabled {
 
 .svg-page1-notes {
   fill: #12203d;
-  font-size: 4.1px;
+  font-size: 5px;
   font-weight: 500;
 }
 
 .svg-page1-field-label {
   fill: #1b2e9e;
-  font-size: 4px;
+  font-size: 5.2px;
   font-weight: 700;
 }
 
 .svg-page1-field-value {
   fill: #0d1a34;
-  font-size: 4.4px;
+  font-size: 5.5px;
   font-weight: 600;
 }
 
@@ -339,7 +339,7 @@ button:disabled {
 
 .svg-page1-callout-text {
   fill: #0d1a34;
-  font-size: 4.2px;
+  font-size: 5.8px;
   font-weight: 700;
 }
 

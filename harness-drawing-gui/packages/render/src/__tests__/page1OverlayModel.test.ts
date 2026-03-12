@@ -68,6 +68,9 @@ describe("buildPage1OverlayModel", () => {
     expect(model.markers.some((marker) => marker.type === "triangle")).toBe(true);
     expect(model.markers.some((marker) => marker.type === "square")).toBe(true);
     expect(model.texts.some((text) => text.id === "overall-length" && text.value === "130 MM")).toBe(true);
+    expect(model.texts.some((text) => text.id === "revision-value-REV")).toBe(true);
+    expect(model.texts.some((text) => text.id === "title-value-TITLE")).toBe(true);
+    expect(model.texts.some((text) => text.id.startsWith("note-body-05-"))).toBe(true);
   });
 });
 
