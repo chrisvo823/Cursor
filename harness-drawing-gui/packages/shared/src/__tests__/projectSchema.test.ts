@@ -47,9 +47,19 @@ function buildFixture(): HarnessProjectDocumentV1 {
     },
     page1: {
       overallLength: "150 MM",
+      overallLengthValue: 150,
+      overallLengthUnit: "MM",
+      overallLengthTolerance: 10,
       labelA: "FRONT",
       labelB: "REAR",
+      labelTableA: "P2\nA01",
+      labelTableB: "P4\nA01",
       notesText: "01 NOTE",
+      notesOverrides: {
+        note04: "EDIT 04",
+        note05: "EDIT 05",
+        note07: "EDIT 07",
+      },
       revision: {
         rev: "B02",
         desc: "INITIAL",
@@ -64,6 +74,16 @@ function buildFixture(): HarnessProjectDocumentV1 {
         date: "",
         file: "",
       },
+      approvals: {
+        eeName: "EE",
+        eeDate: "2026-03-12",
+        meName: "ME",
+        meDate: "2026-03-12",
+        techName: "TECH",
+        techDate: "2026-03-12",
+      },
+      referenceDocuments: "IPC",
+      todayDate: "2026-03-12",
       callouts: [{ id: "callout_1", value: "01" }],
     },
     page2: {

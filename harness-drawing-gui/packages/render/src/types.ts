@@ -193,13 +193,37 @@ export type Page1CalloutField = {
   value: string;
 };
 
+export type Page1NotesOverrides = {
+  note04: string;
+  note05: string;
+  note07: string;
+};
+
+export type Page1Approvals = {
+  eeName: string;
+  eeDate: string;
+  meName: string;
+  meDate: string;
+  techName: string;
+  techDate: string;
+};
+
 export type Page1OverlayFields = {
   overallLength: string;
+  overallLengthValue: number;
+  overallLengthUnit: string;
+  overallLengthTolerance: number;
   labelA: string;
   labelB: string;
+  labelTableA: string;
+  labelTableB: string;
   notesText: string;
+  notesOverrides: Page1NotesOverrides;
   revision: Page1RevisionFields;
   titleBlock: Page1TitleBlockFields;
+  approvals: Page1Approvals;
+  referenceDocuments: string;
+  todayDate: string;
   callouts: Page1CalloutField[];
 };
 

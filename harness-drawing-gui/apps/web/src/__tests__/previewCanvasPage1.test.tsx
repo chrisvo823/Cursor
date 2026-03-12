@@ -59,6 +59,6 @@ describe("PreviewCanvas Page 1 render path", () => {
     expect(markup).toContain('aria-label="Harness page 1 preview"');
     expect(markup).toContain("<image");
     expect(markup).toContain("svg-page1-field-value");
-    expect(markup).toContain("130 MM");
+    expect(markup).toContain("500 MM +/-10 MM");
   });
 });

@@ -14,6 +14,9 @@ import {
 } from "@harness/shared";
 import {
   createDefaultPage1Fields,
+  createExamplePage1Fields,
+  composeOverallLengthString,
+  mergeNotesTextWithOverrides,
   updateCalloutField,
   updateRevisionField,
   updateTitleBlockField,
@@ -67,11 +70,20 @@ export type PreviewState = {
   activeSheetName: string | null;
   page1Fields: Page1OverlayFields;
   setPage1OverallLength: (value: string) => void;
+  setPage1OverallLengthValue: (value: number) => void;
+  setPage1OverallLengthUnit: (value: string) => void;
+  setPage1OverallLengthTolerance: (value: number) => void;
   setPage1LabelA: (value: string) => void;
   setPage1LabelB: (value: string) => void;
+  setPage1LabelTableA: (value: string) => void;
+  setPage1LabelTableB: (value: string) => void;
   setPage1NotesText: (value: string) => void;
+  setPage1NoteOverride: (key: keyof Page1OverlayFields["notesOverrides"], value: string) => void;
   setPage1RevisionField: (key: keyof Page1OverlayFields["revision"], value: string) => void;
   setPage1TitleBlockField: (key: keyof Page1OverlayFields["titleBlock"], value: string) => void;
+  setPage1ApprovalField: (key: keyof Page1OverlayFields["approvals"], value: string) => void;
+  setPage1ReferenceDocuments: (value: string) => void;
+  loadExampleDefaults: () => void;
   setPage1CalloutValue: (id: string, value: string) => void;
   onProjectUpload: (file: File | null) => Promise<void>;
   saveProjectJson: () => Promise<void>;
@@ -205,6 +217,27 @@ export function usePreviewState(): PreviewState {
     setPage1Fields((current) => ({ ...current, overallLength: value }));
   }, []);
 
+  const setPage1OverallLengthValue = useCallback((value: number) => {
+    setPage1Fields((current) => {
+      const next = { ...current, overallLengthValue: value };
+      return { ...next, overallLength: composeOverallLengthString(next) };
+    });
+  }, []);
+
+  const setPage1OverallLengthUnit = useCallback((value: string) => {
+    setPage1Fields((current) => {
+      const next = { ...current, overallLengthUnit: value };
+      return { ...next, overallLength: composeOverallLengthString(next) };
+    });
+  }, []);
+
+  const setPage1OverallLengthTolerance = useCallback((value: number) => {
+    setPage1Fields((current) => {
+      const next = { ...current, overallLengthTolerance: value };
+      return { ...next, overallLength: composeOverallLengthString(next) };
+    });
+  }, []);
+
   const setPage1LabelA = useCallback((value: string) => {
     setPage1Fields((current) => ({ ...current, labelA: value }));
   }, []);
@@ -213,8 +246,32 @@ export function usePreviewState(): PreviewState {
     setPage1Fields((current) => ({ ...current, labelB: value }));
   }, []);
 
+  const setPage1LabelTableA = useCallback((value: string) => {
+    setPage1Fields((current) => ({ ...current, labelTableA: value }));
+  }, []);
+
+  const setPage1LabelTableB = useCallback((value: string) => {
+    setPage1Fields((current) => ({ ...current, labelTableB: value }));
+  }, []);
+
   const setPage1NotesText = useCallback((value: string) => {
     setPage1Fields((current) => ({ ...current, notesText: value }));
+  }, []);
+
+  const setPage1NoteOverride = useCallback((key: keyof Page1OverlayFields["notesOverrides"], value: string) => {
+    setPage1Fields((current) => {
+      const next = {
+        ...current,
+        notesOverrides: {
+          ...current.notesOverrides,
+          [key]: value,
+        },
+      };
+      return {
+        ...next,
+        notesText: mergeNotesTextWithOverrides(next),
+      };
+    });
   }, []);
 
   const setPage1RevisionField = useCallback((key: keyof Page1OverlayFields["revision"], value: string) => {
@@ -229,6 +286,32 @@ export function usePreviewState(): PreviewState {
       ...current,
       titleBlock: updateTitleBlockField(current.titleBlock, key, value),
     }));
+  }, []);
+
+  const setPage1ApprovalField = useCallback((key: keyof Page1OverlayFields["approvals"], value: string) => {
+    setPage1Fields((current) => ({
+      ...current,
+      approvals: {
+        ...current.approvals,
+        [key]: value,
+      },
+    }));
+  }, []);
+
+  const setPage1ReferenceDocuments = useCallback((value: string) => {
+    setPage1Fields((current) => ({ ...current, referenceDocuments: value }));
+  }, []);
+
+  const loadExampleDefaults = useCallback(() => {
+    const defaults = createExamplePage1Fields();
+    setPage1Fields(defaults);
+    setLeftConnectorName("P2");
+    setRightConnectorName("P4");
+    setLeftConnectorSubtitle("TO TAIL (J2)");
+    setRightConnectorSubtitle("TO I/O CARRIER (J4)");
+    setLinePitchMm(9.5);
+    setAutoExpandConnectorColumns(true);
+    setActionMessage({ tone: "ok", text: "Loaded Example.pdf defaults." });
   }, []);
 
   const setPage1CalloutValue = useCallback((id: string, value: string) => {
@@ -395,11 +478,20 @@ export function usePreviewState(): PreviewState {
     activeSheetName,
     page1Fields,
     setPage1OverallLength,
+    setPage1OverallLengthValue,
+    setPage1OverallLengthUnit,
+    setPage1OverallLengthTolerance,
     setPage1LabelA,
     setPage1LabelB,
+    setPage1LabelTableA,
+    setPage1LabelTableB,
     setPage1NotesText,
+    setPage1NoteOverride,
     setPage1RevisionField,
     setPage1TitleBlockField,
+    setPage1ApprovalField,
+    setPage1ReferenceDocuments,
+    loadExampleDefaults,
     setPage1CalloutValue,
     onProjectUpload,
     saveProjectJson,

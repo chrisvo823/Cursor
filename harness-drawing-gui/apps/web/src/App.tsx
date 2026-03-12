@@ -50,11 +50,20 @@ export default function App() {
           activeSheetName={preview.activeSheetName}
           page1Fields={preview.page1Fields}
           onPage1OverallLengthChange={preview.setPage1OverallLength}
+          onPage1OverallLengthValueChange={preview.setPage1OverallLengthValue}
+          onPage1OverallLengthUnitChange={preview.setPage1OverallLengthUnit}
+          onPage1OverallLengthToleranceChange={preview.setPage1OverallLengthTolerance}
           onPage1LabelAChange={preview.setPage1LabelA}
           onPage1LabelBChange={preview.setPage1LabelB}
+          onPage1LabelTableAChange={preview.setPage1LabelTableA}
+          onPage1LabelTableBChange={preview.setPage1LabelTableB}
           onPage1NotesChange={preview.setPage1NotesText}
+          onPage1NoteOverrideChange={preview.setPage1NoteOverride}
           onPage1RevisionFieldChange={preview.setPage1RevisionField}
           onPage1TitleFieldChange={preview.setPage1TitleBlockField}
+          onPage1ApprovalFieldChange={preview.setPage1ApprovalField}
+          onPage1ReferenceDocumentsChange={preview.setPage1ReferenceDocuments}
+          onLoadExampleDefaults={preview.loadExampleDefaults}
           onPage1CalloutChange={preview.setPage1CalloutValue}
           onSaveProjectClick={() => void preview.saveProjectJson()}
           canSaveProject={preview.canSaveProject}

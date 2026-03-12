@@ -10,14 +10,24 @@ import type { Page1OverlayFields } from "../types";
 
 const sampleFields: Page1OverlayFields = {
   overallLength: "130 MM",
+  overallLengthValue: 130,
+  overallLengthUnit: "MM",
+  overallLengthTolerance: 10,
   labelA: "A",
   labelB: "B",
+  labelTableA: "P2",
+  labelTableB: "P4",
   notesText: [
     "01 FIRST NOTE TEXT FOR ASSEMBLY.",
     "02 SECOND NOTE TEXT WRAPS.",
     "05 TRIANGLE MARKER NOTE.",
     "07 SQUARE MARKER NOTE.",
   ].join("\n"),
+  notesOverrides: {
+    note04: "FOURTH NOTE",
+    note05: "TRIANGLE MARKER NOTE.",
+    note07: "SQUARE MARKER NOTE.",
+  },
   revision: {
     rev: "A01",
     desc: "INITIAL RELEASE",
@@ -32,6 +42,16 @@ const sampleFields: Page1OverlayFields = {
     date: "2026-02-16",
     file: "harness.asm",
   },
+  approvals: {
+    eeName: "EE",
+    eeDate: "2026-02-16",
+    meName: "ME",
+    meDate: "2026-02-16",
+    techName: "TECH",
+    techDate: "2026-02-16",
+  },
+  referenceDocuments: "IPC",
+  todayDate: "2026-02-16",
   callouts: [
     { id: "callout_1", value: "01" },
     { id: "callout_2", value: "02" },

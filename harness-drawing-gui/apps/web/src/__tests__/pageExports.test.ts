@@ -46,6 +46,6 @@ describe("pageExports", () => {
     expect(svg).toContain("<svg");
     expect(svg).toContain("<image");
     expect(svg).toContain("<text");
-    expect(svg).toContain("130 MM");
+    expect(svg).toContain("500 MM +/-10 MM");
   });
 });

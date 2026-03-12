@@ -21,9 +21,19 @@ export type ProjectTemplateState = {
 
 export type ProjectPage1Fields = {
   overallLength: string;
+  overallLengthValue: number;
+  overallLengthUnit: string;
+  overallLengthTolerance: number;
   labelA: string;
   labelB: string;
+  labelTableA: string;
+  labelTableB: string;
   notesText: string;
+  notesOverrides: {
+    note04: string;
+    note05: string;
+    note07: string;
+  };
   revision: {
     rev: string;
     desc: string;
@@ -38,6 +48,16 @@ export type ProjectPage1Fields = {
     date: string;
     file: string;
   };
+  approvals: {
+    eeName: string;
+    eeDate: string;
+    meName: string;
+    meDate: string;
+    techName: string;
+    techDate: string;
+  };
+  referenceDocuments: string;
+  todayDate: string;
   callouts: Array<{
     id: string;
     value: string;
@@ -137,6 +157,8 @@ function validatePage1Fields(input: unknown): ProjectPage1Fields {
   assert(isObject(input), "Page 1 state must be an object.");
   assert(isObject(input.revision), "Page 1 revision block is required.");
   assert(isObject(input.titleBlock), "Page 1 title block is required.");
+  const notesOverrides = isObject(input.notesOverrides) ? input.notesOverrides : {};
+  const approvals = isObject(input.approvals) ? input.approvals : {};
   assert(Array.isArray(input.callouts), "Page 1 callouts must be an array.");
 
   const callouts = input.callouts.map((callout, index) => {
@@ -150,9 +172,19 @@ function validatePage1Fields(input: unknown): ProjectPage1Fields {
 
   return {
     overallLength: asString(input.overallLength) ?? "",
+    overallLengthValue: asNumber(input.overallLengthValue) ?? 500,
+    overallLengthUnit: asString(input.overallLengthUnit) ?? "MM",
+    overallLengthTolerance: asNumber(input.overallLengthTolerance) ?? 10,
     labelA: asString(input.labelA) ?? "",
     labelB: asString(input.labelB) ?? "",
+    labelTableA: asString(input.labelTableA) ?? "",
+    labelTableB: asString(input.labelTableB) ?? "",
     notesText: asString(input.notesText) ?? "",
+    notesOverrides: {
+      note04: asString(notesOverrides.note04) ?? "",
+      note05: asString(notesOverrides.note05) ?? "",
+      note07: asString(notesOverrides.note07) ?? "",
+    },
     revision: {
       rev: asString(input.revision.rev) ?? "",
       desc: asString(input.revision.desc) ?? "",
@@ -167,6 +199,16 @@ function validatePage1Fields(input: unknown): ProjectPage1Fields {
       date: asString(input.titleBlock.date) ?? "",
       file: asString(input.titleBlock.file) ?? "",
     },
+    approvals: {
+      eeName: asString(approvals.eeName) ?? "",
+      eeDate: asString(approvals.eeDate) ?? "",
+      meName: asString(approvals.meName) ?? "",
+      meDate: asString(approvals.meDate) ?? "",
+      techName: asString(approvals.techName) ?? "",
+      techDate: asString(approvals.techDate) ?? "",
+    },
+    referenceDocuments: asString(input.referenceDocuments) ?? "",
+    todayDate: asString(input.todayDate) ?? "",
     callouts,
   };
 }

@@ -22,11 +22,20 @@ type ControlRailProps = {
   activeSheetName: string | null;
   page1Fields: Page1OverlayFields;
   onPage1OverallLengthChange: (value: string) => void;
+  onPage1OverallLengthValueChange: (value: number) => void;
+  onPage1OverallLengthUnitChange: (value: string) => void;
+  onPage1OverallLengthToleranceChange: (value: number) => void;
   onPage1LabelAChange: (value: string) => void;
   onPage1LabelBChange: (value: string) => void;
+  onPage1LabelTableAChange: (value: string) => void;
+  onPage1LabelTableBChange: (value: string) => void;
   onPage1NotesChange: (value: string) => void;
+  onPage1NoteOverrideChange: (key: keyof Page1OverlayFields["notesOverrides"], value: string) => void;
   onPage1RevisionFieldChange: (key: keyof Page1OverlayFields["revision"], value: string) => void;
   onPage1TitleFieldChange: (key: keyof Page1OverlayFields["titleBlock"], value: string) => void;
+  onPage1ApprovalFieldChange: (key: keyof Page1OverlayFields["approvals"], value: string) => void;
+  onPage1ReferenceDocumentsChange: (value: string) => void;
+  onLoadExampleDefaults: () => void;
   onPage1CalloutChange: (id: string, value: string) => void;
   onSaveProjectClick: () => void;
   canSaveProject: boolean;
@@ -57,11 +66,20 @@ export function ControlRail({
   activeSheetName,
   page1Fields,
   onPage1OverallLengthChange,
+  onPage1OverallLengthValueChange,
+  onPage1OverallLengthUnitChange,
+  onPage1OverallLengthToleranceChange,
   onPage1LabelAChange,
   onPage1LabelBChange,
+  onPage1LabelTableAChange,
+  onPage1LabelTableBChange,
   onPage1NotesChange,
+  onPage1NoteOverrideChange,
   onPage1RevisionFieldChange,
   onPage1TitleFieldChange,
+  onPage1ApprovalFieldChange,
+  onPage1ReferenceDocumentsChange,
+  onLoadExampleDefaults,
   onPage1CalloutChange,
   onSaveProjectClick,
   canSaveProject,
@@ -144,38 +162,127 @@ export function ControlRail({
 
       <section className="panel-section">
         <h2>3) Page 1 fields</h2>
+        <div className="button-row">
+          <button className="primary" onClick={onLoadExampleDefaults} title="Loads the Example.pdf metadata defaults">
+            Load Example.pdf Defaults
+          </button>
+        </div>
         <div className="field">
           <label>Overall length</label>
+          <div className="grid-two">
+            <input
+              type="number"
+              value={page1Fields.overallLengthValue}
+              onChange={(event) => onPage1OverallLengthValueChange(Number(event.currentTarget.value))}
+              title="Example.pdf dimension value"
+            />
+            <input
+              type="text"
+              value={page1Fields.overallLengthUnit}
+              onChange={(event) => onPage1OverallLengthUnitChange(event.currentTarget.value)}
+              title="Example.pdf dimension unit"
+            />
+          </div>
           <input
-            type="text"
-            value={page1Fields.overallLength}
-            onChange={(event) => onPage1OverallLengthChange(event.currentTarget.value)}
+            type="number"
+            value={page1Fields.overallLengthTolerance}
+            onChange={(event) => onPage1OverallLengthToleranceChange(Number(event.currentTarget.value))}
+            title="Example.pdf +/- tolerance"
           />
+          <p>{page1Fields.overallLength}</p>
         </div>
         <div className="grid-two">
           <div className="field">
-            <label>Label A</label>
+            <label>White-box Label A</label>
             <input
               type="text"
               value={page1Fields.labelA}
               onChange={(event) => onPage1LabelAChange(event.currentTarget.value)}
+              title="Example.pdf white-box label A"
             />
           </div>
           <div className="field">
-            <label>Label B</label>
+            <label>White-box Label B</label>
             <input
               type="text"
               value={page1Fields.labelB}
               onChange={(event) => onPage1LabelBChange(event.currentTarget.value)}
+              title="Example.pdf white-box label B"
+            />
+          </div>
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Label Table A</label>
+            <textarea
+              className="textarea-field"
+              value={page1Fields.labelTableA}
+              onChange={(event) => onPage1LabelTableAChange(event.currentTarget.value)}
+              title="Example.pdf label table A payload"
+            />
+          </div>
+          <div className="field">
+            <label>Label Table B</label>
+            <textarea
+              className="textarea-field"
+              value={page1Fields.labelTableB}
+              onChange={(event) => onPage1LabelTableBChange(event.currentTarget.value)}
+              title="Example.pdf label table B payload"
             />
           </div>
         </div>
         <div className="field">
-          <label>Notes block</label>
+          <label>Fixed Notes (IPC/MSCP012)</label>
+          <textarea
+            className="textarea-field"
+            value={[
+              "01 ASSEMBLE HARNESS PER IPC/WHMA-A-620 CLASS 3 REQUIREMENTS.",
+              "02 VERIFY CONTINUITY AND INSULATION PER MSCP012 BEFORE RELEASE.",
+              "03 APPLY IDENTIFICATION SLEEVES PER MSCP012 LABELING TABLE.",
+              "06 ROUTE BUNDLE TO MAINTAIN MINIMUM BEND RADIUS PER MSCP012.",
+              "08 TORQUE FASTENERS PER MSCP012 AND APPLY WITNESS MARK.",
+              "09 FINAL INSPECTION SHALL COMPLY WITH IPC AND MSCP012 QUALITY PLAN.",
+            ].join("\n")}
+            readOnly
+            title="Fixed notes copied from Example.pdf requirements"
+          />
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>Editable Note 04</label>
+            <input
+              type="text"
+              value={page1Fields.notesOverrides.note04}
+              onChange={(event) => onPage1NoteOverrideChange("note04", event.currentTarget.value)}
+              title="Example.pdf note 04"
+            />
+          </div>
+          <div className="field">
+            <label>Editable Note 05</label>
+            <input
+              type="text"
+              value={page1Fields.notesOverrides.note05}
+              onChange={(event) => onPage1NoteOverrideChange("note05", event.currentTarget.value)}
+              title="Example.pdf note 05"
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label>Editable Note 07</label>
+          <input
+            type="text"
+            value={page1Fields.notesOverrides.note07}
+            onChange={(event) => onPage1NoteOverrideChange("note07", event.currentTarget.value)}
+            title="Example.pdf note 07"
+          />
+        </div>
+        <div className="field">
+          <label>Rendered Notes Block</label>
           <textarea
             className="textarea-field"
             value={page1Fields.notesText}
             onChange={(event) => onPage1NotesChange(event.currentTarget.value)}
+            title="Composed notes text rendered on Page 1"
           />
         </div>
         <div className="grid-two">
@@ -185,6 +292,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.revision.rev}
               onChange={(event) => onPage1RevisionFieldChange("rev", event.currentTarget.value)}
+              title="Example.pdf revision field"
             />
           </div>
           <div className="field">
@@ -193,6 +301,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.revision.by}
               onChange={(event) => onPage1RevisionFieldChange("by", event.currentTarget.value)}
+              title="Example.pdf revision by field"
             />
           </div>
         </div>
@@ -203,6 +312,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.revision.desc}
               onChange={(event) => onPage1RevisionFieldChange("desc", event.currentTarget.value)}
+              title="Example.pdf revision description"
             />
           </div>
           <div className="field">
@@ -211,6 +321,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.revision.date}
               onChange={(event) => onPage1RevisionFieldChange("date", event.currentTarget.value)}
+              title="Example.pdf revision date"
             />
           </div>
         </div>
@@ -221,6 +332,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.titleBlock.title}
               onChange={(event) => onPage1TitleFieldChange("title", event.currentTarget.value)}
+              title="Example.pdf title block title"
             />
           </div>
           <div className="field">
@@ -229,6 +341,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.titleBlock.number}
               onChange={(event) => onPage1TitleFieldChange("number", event.currentTarget.value)}
+              title="Example.pdf part number"
             />
           </div>
         </div>
@@ -239,6 +352,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.titleBlock.sheet}
               onChange={(event) => onPage1TitleFieldChange("sheet", event.currentTarget.value)}
+              title="Example.pdf sheet identifier"
             />
           </div>
           <div className="field">
@@ -247,6 +361,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.titleBlock.revision}
               onChange={(event) => onPage1TitleFieldChange("revision", event.currentTarget.value)}
+              title="Example.pdf title-block revision"
             />
           </div>
         </div>
@@ -257,6 +372,7 @@ export function ControlRail({
               type="text"
               value={page1Fields.titleBlock.date}
               onChange={(event) => onPage1TitleFieldChange("date", event.currentTarget.value)}
+              title="Example.pdf date field"
             />
           </div>
           <div className="field">
@@ -265,6 +381,65 @@ export function ControlRail({
               type="text"
               value={page1Fields.titleBlock.file}
               onChange={(event) => onPage1TitleFieldChange("file", event.currentTarget.value)}
+              title="Example.pdf file path field"
+            />
+          </div>
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>EE approval</label>
+            <input
+              type="text"
+              value={page1Fields.approvals.eeName}
+              onChange={(event) => onPage1ApprovalFieldChange("eeName", event.currentTarget.value)}
+              title="Example.pdf EE approval name"
+            />
+            <input
+              type="text"
+              value={page1Fields.approvals.eeDate}
+              onChange={(event) => onPage1ApprovalFieldChange("eeDate", event.currentTarget.value)}
+              title="Example.pdf EE approval date"
+            />
+          </div>
+          <div className="field">
+            <label>ME approval</label>
+            <input
+              type="text"
+              value={page1Fields.approvals.meName}
+              onChange={(event) => onPage1ApprovalFieldChange("meName", event.currentTarget.value)}
+              title="Example.pdf ME approval name"
+            />
+            <input
+              type="text"
+              value={page1Fields.approvals.meDate}
+              onChange={(event) => onPage1ApprovalFieldChange("meDate", event.currentTarget.value)}
+              title="Example.pdf ME approval date"
+            />
+          </div>
+        </div>
+        <div className="grid-two">
+          <div className="field">
+            <label>TECH approval</label>
+            <input
+              type="text"
+              value={page1Fields.approvals.techName}
+              onChange={(event) => onPage1ApprovalFieldChange("techName", event.currentTarget.value)}
+              title="Example.pdf TECH approval name"
+            />
+            <input
+              type="text"
+              value={page1Fields.approvals.techDate}
+              onChange={(event) => onPage1ApprovalFieldChange("techDate", event.currentTarget.value)}
+              title="Example.pdf TECH approval date"
+            />
+          </div>
+          <div className="field">
+            <label>Reference documents</label>
+            <input
+              type="text"
+              value={page1Fields.referenceDocuments}
+              onChange={(event) => onPage1ReferenceDocumentsChange(event.currentTarget.value)}
+              title="Example.pdf reference documents"
             />
           </div>
         </div>
@@ -278,6 +453,7 @@ export function ControlRail({
                 value={callout.value}
                 onChange={(event) => onPage1CalloutChange(callout.id, event.currentTarget.value)}
                 aria-label={`Callout ${callout.id}`}
+                title={`Example.pdf callout value ${callout.id}`}
               />
             ))}
           </div>
