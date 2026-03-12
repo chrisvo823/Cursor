@@ -316,7 +316,12 @@ export function ControlRail({
         <h2>6) Export</h2>
         <div className="button-row">
           <button className="primary" onClick={onExportPdfClick} disabled={!canExport}>Export PDF</button>
-          <button onClick={onExportSvgClick} disabled={templateStatus !== "loaded"}>Export SVG</button>
+          <button
+            onClick={onExportSvgClick}
+            disabled={activePage === 1 ? templateStatus !== "loaded" : !canExport}
+          >
+            Export SVG
+          </button>
           <button onClick={onExportDxfClick} disabled={!canExport}>Export DXF</button>
         </div>
         {!canExport ? <p>PDF/DXF require both template and pinout to be loaded.</p> : null}

@@ -139,28 +139,26 @@ export function usePreviewState(): PreviewState {
   const [actionMessage, setActionMessage] = useState<PreviewActionMessage | null>(null);
 
   const onTemplateUpload = useCallback(async (file: File | null) => {
-    const previous = template;
     setTemplate((current) => toLoadingState(current));
     try {
       if (!file) throw new TemplateValidationError("NO_FILE", "Template PDF is required.");
       const loaded = await loadTemplatePdf(file);
       setTemplate(toLoadedState(loaded));
     } catch (error) {
-      setTemplate(toErrorState(previous, toErrorMessage(error, "Template PDF failed to load.")));
+      setTemplate((current) => toErrorState(current, toErrorMessage(error, "Template PDF failed to load.")));
     }
-  }, [template]);
+  }, []);
 
   const onPinoutUpload = useCallback(async (file: File | null) => {
-    const previous = pinout;
     setPinout((current) => toLoadingState(current));
     try {
       if (!file) throw new PinoutParseError("UNSUPPORTED_EXTENSION", "Pinout file is required.");
       const parsed = await parsePinoutUpload(file);
       setPinout(toLoadedState(parsed));
     } catch (error) {
-      setPinout(toErrorState(previous, toErrorMessage(error, "Pinout parsing failed.")));
+      setPinout((current) => toErrorState(current, toErrorMessage(error, "Pinout parsing failed.")));
     }
-  }, [pinout]);
+  }, []);
 
   const page2Scene = useMemo(() => {
     if (pinout.status !== "loaded" || !pinout.data) return null;

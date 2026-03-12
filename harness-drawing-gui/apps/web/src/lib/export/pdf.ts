@@ -81,18 +81,50 @@ function drawPrimitive(page: PDFPage, primitive: ExportPrimitive, pageHeight: nu
   });
 }
 
-export async function exportDrawingPdf(input: ExportDrawingPdfInput): Promise<ArrayBuffer> {
-  const document = await PDFDocument.create();
+async function drawBackgroundImage(
+  document: PDFDocument,
+  page: PDFPage,
+  pageInput: PdfExportPage,
+): Promise<void> {
+  const dataUrlHeader = pageInput.backgroundImageDataUrl
+    .slice(0, pageInput.backgroundImageDataUrl.indexOf(","))
+    .toLowerCase();
+  const bytes = dataUrlToUint8Array(pageInput.backgroundImageDataUrl);
+  if (bytes.length === 0) {
+    throw new Error("Template page image data is invalid or missing base64 content.");
+  }
 
-  for (const pageInput of input.pages) {
-    const page = document.addPage([pageInput.widthPt, pageInput.heightPt]);
-    const png = await document.embedPng(dataUrlToUint8Array(pageInput.backgroundImageDataUrl));
+  if (dataUrlHeader.startsWith("data:image/png")) {
+    const png = await document.embedPng(bytes);
     page.drawImage(png, {
       x: 0,
       y: 0,
       width: pageInput.widthPt,
       height: pageInput.heightPt,
     });
+    return;
+  }
+
+  if (dataUrlHeader.startsWith("data:image/jpeg") || dataUrlHeader.startsWith("data:image/jpg")) {
+    const jpg = await document.embedJpg(bytes);
+    page.drawImage(jpg, {
+      x: 0,
+      y: 0,
+      width: pageInput.widthPt,
+      height: pageInput.heightPt,
+    });
+    return;
+  }
+
+  throw new Error("Template page image data URL must be PNG or JPEG.");
+}
+
+export async function exportDrawingPdf(input: ExportDrawingPdfInput): Promise<ArrayBuffer> {
+  const document = await PDFDocument.create();
+
+  for (const pageInput of input.pages) {
+    const page = document.addPage([pageInput.widthPt, pageInput.heightPt]);
+    await drawBackgroundImage(document, page, pageInput);
 
     for (const primitive of pageInput.primitives) {
       drawPrimitive(page, primitive, pageInput.heightPt);
