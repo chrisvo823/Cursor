@@ -17,6 +17,8 @@ const overlayModel: Page2OverlayModel = {
     { id: "tp-a", x: 223, y: 118, radius: 1.5 },
     { id: "tp-b", x: 223, y: 122, radius: 1.5 },
   ],
+  auxLines: [],
+  polygons: [],
 };
 
 describe("Page2OverlaySvg", () => {

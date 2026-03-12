@@ -91,7 +91,7 @@ export type Page2OverlayText = {
   x: number;
   y: number;
   textAnchor?: "start" | "middle" | "end";
-  tone: "heading" | "subheading" | "labelLeft" | "labelRight" | "meta";
+  tone: "heading" | "subheading" | "labelLeft" | "labelRight" | "meta" | "tooling" | "legend" | "pinHint";
 };
 
 export type Page2OverlayFigure8Marker = {
@@ -99,6 +99,24 @@ export type Page2OverlayFigure8Marker = {
   x: number;
   y: number;
   radius: number;
+};
+
+export type Page2OverlayAuxLine = {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  stroke: string;
+  strokeWidth: number;
+};
+
+export type Page2OverlayPolygon = {
+  id: string;
+  points: ScenePoint[];
+  stroke: string;
+  strokeWidth: number;
+  fill?: string;
 };
 
 export type Page2OverlayModel = {
@@ -109,6 +127,8 @@ export type Page2OverlayModel = {
   wires: Page2OverlayWire[];
   texts: Page2OverlayText[];
   figure8Markers: Page2OverlayFigure8Marker[];
+  auxLines: Page2OverlayAuxLine[];
+  polygons: Page2OverlayPolygon[];
 };
 
 export type Page2TemplateAnchorConfig = {
@@ -239,6 +259,7 @@ export type Page1TemplateAnchorConfig = {
   overallLengthAnchor: ScenePoint;
   labelAAnchor: ScenePoint;
   labelBAnchor: ScenePoint;
+  notesTitleAnchor: ScenePoint;
   notesRegion: {
     x: number;
     y: number;
@@ -270,6 +291,38 @@ export type Page1TemplateAnchorConfig = {
     radius: number;
   }>;
   calloutTextOffsetY: number;
+  connectorBlocks: {
+    left: { x: number; y: number; width: number; height: number };
+    right: { x: number; y: number; width: number; height: number };
+  };
+  bundleDimension: {
+    lineStartX: number;
+    lineEndX: number;
+    lineY: number;
+    arrowSize: number;
+  };
+  labelTableRegion: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    splitX: number;
+    headingY: number;
+    valueStartY: number;
+    valueLineGap: number;
+  };
+  flagZones: {
+    left: { x: number; y: number; width: number; height: number };
+    right: { x: number; y: number; width: number; height: number };
+  };
+  approvalsRegion: {
+    x: number;
+    y: number;
+    rowGap: number;
+    valueOffsetX: number;
+    dateOffsetX: number;
+  };
+  referenceAnchor: ScenePoint;
 };
 
 export type Page1OverlayText = {
@@ -297,12 +350,32 @@ export type Page1OverlayCallout = {
   value: string;
 };
 
+export type Page1OverlayLine = {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  stroke: string;
+  strokeWidth: number;
+};
+
+export type Page1OverlayPolygon = {
+  id: string;
+  points: ScenePoint[];
+  stroke: string;
+  strokeWidth: number;
+  fill?: string;
+};
+
 export type Page1OverlayModel = {
   sceneWidth: number;
   sceneHeight: number;
   texts: Page1OverlayText[];
   markers: Page1OverlayMarker[];
   callouts: Page1OverlayCallout[];
+  lines: Page1OverlayLine[];
+  polygons: Page1OverlayPolygon[];
 };
 
 export type Page1TemplateCalibration = {

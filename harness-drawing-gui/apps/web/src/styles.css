@@ -264,6 +264,17 @@ button:disabled {
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
 }
 
+.paper-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+.paper-split-item {
+  width: min(1200px, 100%);
+}
+
 .preview-message {
   padding: 16px;
   border-radius: 12px;
@@ -311,6 +322,24 @@ button:disabled {
   fill: #1b2e9e;
   font-size: 3px;
   font-weight: 600;
+}
+
+.svg-tooling {
+  fill: #0d1a34;
+  font-size: 4.1px;
+  font-weight: 600;
+}
+
+.svg-legend {
+  fill: #0d1a34;
+  font-size: 8.8px;
+  font-weight: 800;
+}
+
+.svg-pin-hint {
+  fill: #1b2e9e;
+  font-size: 4.2px;
+  font-weight: 800;
 }
 
 .svg-page1-notes {

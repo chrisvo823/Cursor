@@ -17,6 +17,8 @@ const page2Overlay: Page2OverlayModel = {
     { id: "tp-top", x: 223, y: 118, radius: 1.5 },
     { id: "tp-bottom", x: 223, y: 122, radius: 1.5 },
   ],
+  auxLines: [],
+  polygons: [],
 };
 
 describe("render export adapters", () => {

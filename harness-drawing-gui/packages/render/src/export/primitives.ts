@@ -79,6 +79,9 @@ function textSizeForTone(tone: string): number {
   if (tone === "heading") return 9;
   if (tone === "subheading") return 6;
   if (tone === "meta") return 4.6;
+  if (tone === "tooling") return 4.1;
+  if (tone === "legend") return 8.8;
+  if (tone === "pinHint") return 4.2;
   if (tone === "callout") return 6;
   if (tone === "fieldLabel") return 5.2;
   if (tone === "fieldValue") return 5.5;
@@ -89,6 +92,7 @@ function textSizeForTone(tone: string): number {
 function textColorForTone(tone: string): string {
   if (tone === "heading" || tone === "subheading") return "#1b2e9e";
   if (tone === "meta") return "#1b2e9e";
+  if (tone === "pinHint") return "#1b2e9e";
   return "#111111";
 }
 
@@ -105,6 +109,32 @@ export function buildPage1ExportPrimitives(
   transform: Page2OverlayTransform,
 ): ExportPrimitive[] {
   const primitives: ExportPrimitive[] = [];
+
+  for (const line of model.lines) {
+    const p1 = transformPoint({ x: line.x1, y: line.y1 }, transform);
+    const p2 = transformPoint({ x: line.x2, y: line.y2 }, transform);
+    primitives.push({
+      kind: "line",
+      layer: "HARNESS_MARKERS",
+      x1: p1.x,
+      y1: p1.y,
+      x2: p2.x,
+      y2: p2.y,
+      stroke: line.stroke,
+      strokeWidth: line.strokeWidth,
+    });
+  }
+
+  for (const polygon of model.polygons) {
+    primitives.push({
+      kind: "polygon",
+      layer: "HARNESS_MARKERS",
+      points: polygon.points.map((point) => transformPoint(point, transform)),
+      stroke: polygon.stroke,
+      strokeWidth: polygon.strokeWidth,
+      fill: polygon.fill,
+    });
+  }
 
   for (const callout of model.callouts) {
     const center = transformPoint({ x: callout.x, y: callout.y }, transform);
@@ -167,6 +197,32 @@ export function buildPage2ExportPrimitives(
   transform: Page2OverlayTransform,
 ): ExportPrimitive[] {
   const primitives: ExportPrimitive[] = [];
+
+  for (const polygon of model.polygons) {
+    primitives.push({
+      kind: "polygon",
+      layer: "HARNESS_MARKERS",
+      points: polygon.points.map((point) => transformPoint(point, transform)),
+      stroke: polygon.stroke,
+      strokeWidth: polygon.strokeWidth,
+      fill: polygon.fill,
+    });
+  }
+
+  for (const line of model.auxLines) {
+    const p1 = transformPoint({ x: line.x1, y: line.y1 }, transform);
+    const p2 = transformPoint({ x: line.x2, y: line.y2 }, transform);
+    primitives.push({
+      kind: "line",
+      layer: "HARNESS_MARKERS",
+      x1: p1.x,
+      y1: p1.y,
+      x2: p2.x,
+      y2: p2.y,
+      stroke: line.stroke,
+      strokeWidth: line.strokeWidth,
+    });
+  }
 
   for (const wire of model.wires) {
     const p1 = transformPoint({ x: wire.x1, y: wire.y1 }, transform);

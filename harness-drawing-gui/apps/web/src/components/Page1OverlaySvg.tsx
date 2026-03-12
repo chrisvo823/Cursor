@@ -18,6 +18,28 @@ function trianglePoints(cx: number, cy: number, size: number): string {
 export function Page1OverlaySvg({ overlay, transform }: Page1OverlaySvgProps) {
   return (
     <g transform={`matrix(${transform.scaleX} 0 0 ${transform.scaleY} ${transform.offsetX} ${transform.offsetY})`}>
+      {overlay.polygons.map((polygon) => (
+        <polygon
+          key={polygon.id}
+          points={polygon.points.map((point) => `${point.x},${point.y}`).join(" ")}
+          stroke={polygon.stroke}
+          strokeWidth={polygon.strokeWidth}
+          fill={polygon.fill ?? "none"}
+        />
+      ))}
+
+      {overlay.lines.map((line) => (
+        <line
+          key={line.id}
+          x1={line.x1}
+          y1={line.y1}
+          x2={line.x2}
+          y2={line.y2}
+          stroke={line.stroke}
+          strokeWidth={line.strokeWidth}
+        />
+      ))}
+
       {overlay.callouts.map((callout) => (
         <g key={callout.id}>
           <circle cx={callout.x} cy={callout.y} r={callout.radius} className="svg-page1-callout-circle" />

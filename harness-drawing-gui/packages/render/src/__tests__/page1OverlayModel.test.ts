@@ -91,6 +91,9 @@ describe("buildPage1OverlayModel", () => {
     expect(model.texts.some((text) => text.id === "revision-value-REV")).toBe(true);
     expect(model.texts.some((text) => text.id === "title-value-TITLE")).toBe(true);
     expect(model.texts.some((text) => text.id.startsWith("note-body-05-"))).toBe(true);
+    expect(model.lines.some((line) => line.id === "bundle-line")).toBe(true);
+    expect(model.polygons.some((polygon) => polygon.id === "connector-left")).toBe(true);
+    expect(model.polygons.some((polygon) => polygon.id === "label-table-outer")).toBe(true);
   });
 });
 

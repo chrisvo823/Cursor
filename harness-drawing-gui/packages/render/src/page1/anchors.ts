@@ -8,6 +8,7 @@ export const DEFAULT_PAGE1_TEMPLATE_ANCHORS: Page1TemplateAnchorConfig = {
   overallLengthAnchor: { x: 386.76, y: 127.36 },
   labelAAnchor: { x: 319.56, y: 197.86 },
   labelBAnchor: { x: 441.54, y: 197.86 },
+  notesTitleAnchor: { x: 22, y: 32 },
   notesRegion: {
     x: 24,
     y: 64,
@@ -40,6 +41,38 @@ export const DEFAULT_PAGE1_TEMPLATE_ANCHORS: Page1TemplateAnchorConfig = {
     { id: "callout_5", x: 473.17, y: 224.75, radius: 6.55 },
   ],
   calloutTextOffsetY: 1,
+  connectorBlocks: {
+    left: { x: 248, y: 132, width: 74, height: 26 },
+    right: { x: 404, y: 132, width: 74, height: 26 },
+  },
+  bundleDimension: {
+    lineStartX: 286.13,
+    lineEndX: 474.67,
+    lineY: 179.68,
+    arrowSize: 6,
+  },
+  labelTableRegion: {
+    x: 250,
+    y: 302,
+    width: 220,
+    height: 70,
+    splitX: 110,
+    headingY: 318,
+    valueStartY: 334,
+    valueLineGap: 9,
+  },
+  flagZones: {
+    left: { x: 174, y: 146, width: 118, height: 24 },
+    right: { x: 430, y: 146, width: 118, height: 24 },
+  },
+  approvalsRegion: {
+    x: 532.51,
+    y: 33,
+    rowGap: 5.2,
+    valueOffsetX: 20,
+    dateOffsetX: 88,
+  },
+  referenceAnchor: { x: 479.27, y: 402 },
 };
 
 // A named sample profile keeps calibration tuning explicit for future templates.
@@ -51,6 +84,7 @@ export const SAMPLE_LADDER_26PIN_PAGE1_TEMPLATE_ANCHORS: Page1TemplateAnchorConf
   overallLengthAnchor: { x: 386.76, y: 127.36 },
   labelAAnchor: { x: 319.56, y: 197.86 },
   labelBAnchor: { x: 441.54, y: 197.86 },
+  notesTitleAnchor: { x: 22, y: 32 },
   notesRegion: {
     x: 24,
     y: 64,
@@ -83,4 +117,36 @@ export const SAMPLE_LADDER_26PIN_PAGE1_TEMPLATE_ANCHORS: Page1TemplateAnchorConf
     { id: "callout_5", x: 473.17, y: 224.75, radius: 6.55 },
   ],
   calloutTextOffsetY: 1,
+  connectorBlocks: {
+    left: { x: 248, y: 132, width: 74, height: 26 },
+    right: { x: 404, y: 132, width: 74, height: 26 },
+  },
+  bundleDimension: {
+    lineStartX: 286.13,
+    lineEndX: 474.67,
+    lineY: 179.68,
+    arrowSize: 6,
+  },
+  labelTableRegion: {
+    x: 250,
+    y: 302,
+    width: 220,
+    height: 70,
+    splitX: 110,
+    headingY: 318,
+    valueStartY: 334,
+    valueLineGap: 9,
+  },
+  flagZones: {
+    left: { x: 174, y: 146, width: 118, height: 24 },
+    right: { x: 430, y: 146, width: 118, height: 24 },
+  },
+  approvalsRegion: {
+    x: 532.51,
+    y: 33,
+    rowGap: 5.2,
+    valueOffsetX: 20,
+    dateOffsetX: 88,
+  },
+  referenceAnchor: { x: 479.27, y: 402 },
 };

@@ -10,6 +10,28 @@ export function Page2OverlaySvg({ overlay, transform }: Page2OverlaySvgProps) {
     <g
       transform={`matrix(${transform.scaleX} 0 0 ${transform.scaleY} ${transform.offsetX} ${transform.offsetY})`}
     >
+      {overlay.polygons.map((polygon) => (
+        <polygon
+          key={polygon.id}
+          points={polygon.points.map((point) => `${point.x},${point.y}`).join(" ")}
+          stroke={polygon.stroke}
+          strokeWidth={polygon.strokeWidth}
+          fill={polygon.fill ?? "none"}
+        />
+      ))}
+
+      {overlay.auxLines.map((line) => (
+        <line
+          key={line.id}
+          x1={line.x1}
+          y1={line.y1}
+          x2={line.x2}
+          y2={line.y2}
+          stroke={line.stroke}
+          strokeWidth={line.strokeWidth}
+        />
+      ))}
+
       {overlay.pinDots.map((dot, index) => (
         <circle key={`dot-${index}`} cx={dot.x} cy={dot.y} r="1.4" fill="#111" />
       ))}
@@ -37,6 +59,12 @@ export function Page2OverlaySvg({ overlay, transform }: Page2OverlaySvgProps) {
                 ? "svg-subheading"
                 : text.tone === "meta"
                   ? "svg-meta"
+                  : text.tone === "tooling"
+                    ? "svg-tooling"
+                    : text.tone === "legend"
+                      ? "svg-legend"
+                      : text.tone === "pinHint"
+                        ? "svg-pin-hint"
                   : text.tone === "labelRight"
                     ? "svg-label-right"
                     : "svg-label-left"
